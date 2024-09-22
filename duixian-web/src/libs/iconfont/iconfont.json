@@ -1,0 +1,30 @@
+{
+  "id": "4552092",
+  "name": "sf",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1975329",
+      "name": "订单",
+      "font_class": "order",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "40384031",
+      "name": "icon_shuju@1x",
+      "font_class": "data",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "21758107",
+      "name": "代理管理工具",
+      "font_class": "agent",
+      "unicode": "e6ae",
+      "unicode_decimal": 59054
+    }
+  ]
+}
