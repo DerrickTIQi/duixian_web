@@ -1,20 +1,12 @@
 <template>
     <div class="curve">
-      <div class="title">
-          <DetailTitle 
-          type="big"
-          quxianText="进攻压力曲线"
-          quxianEnText="DEFENSIVE PRESSURE CURVE"
-          />
-      </div>
-      <div class="content">
-          <div class="switch-control">
+        <div class="switch-control">
               <div class="qb">
                   <span class="qb_text">全部</span>
               </div>
               <div class="min">近10分钟</div>
           </div>
-          <div ref="chartRef" style="width: 793px; height: 438px;"></div>
+          <div ref="chartRef" style="width: 863px; height: 360px;"></div>
           <div class="footer">
               <div class="one">
                   <div class="name">进攻压力曲线</div>
@@ -31,16 +23,13 @@
                   *进攻压力曲线代表双方进攻施压值，理论上压力值越高，代表该只队伍进攻越好，越容易发生进球等事件
               </div>
           </div>
-      </div>
     </div>
 </template>
 <script setup>
-import DetailTitle from './DetailTitle.vue';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as echarts from 'echarts';
 const chartRef = ref(null);
 let chartInstance = null;
-
 // 图表选项
 const option = {
     grid: {
@@ -172,12 +161,9 @@ onMounted(() => {
 });
 </script>
 <style lang='scss' scoped>
-.content{
-    background-color: rgba(242, 242, 247, 0.5);
-    border-radius: 0px 10px 10px 10px;
-    width: 800px;
-    height: 548px;
-    padding-top: 20px;
+.curve{
+    width: 840px;
+    height: 461px;
 }
 .switch-control{
     display: flex;
@@ -250,5 +236,4 @@ onMounted(() => {
         margin-left: 5px;
     }
 }
-
 </style>

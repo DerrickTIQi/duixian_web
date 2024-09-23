@@ -1,61 +1,63 @@
 <template>
-    <el-table class="match_table" :data="tableData.data" stripe style="width: 100%"  @row-click="handleRowClick">
-        <el-table-column prop="match" label="所属赛事" align="center" width="136px"/>
-        <el-table-column prop="time" label="时间" align="center" width="68px"/>
-        <el-table-column prop="status" label="状态" align="center" width="108px">
-            <template #default="{row}" >
-                <span style="color: #ff3b30;"> {{ row.status }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column prop="home" label="主场球队" align="right">
-            <template #default="{row}" >
-                <span v-if="row.hred" class="red">{{ row.hred }}</span>
-                <span v-if="row.hyellow" class="yellow">{{ row.hyellow }}</span>
-                <span style="color: #8e8e93;font-size: 12px;margin-right: 5px;">{{row.hwin}}</span>
-                <span> {{ row.home }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column prop="point" label="比分" align="center" width="60px">
-            <template #default="{row}" >
-                <span style="color: #ff3b30;font-weight: 600;"> {{ row.point }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column prop="guest" label="客场球队" align="left">
-            <template #default="{row}" >
-                <span> {{ row.guest }}</span>
-                <span style="color: #8e8e93;font-size: 12px;margin:0 5px;">{{row.gwin}}</span>
-                <span v-if="row.gyellow" class="yellow">{{ row.gyellow }}</span>
-                <span v-if="row.gred" class="red">{{ row.gred }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column prop="half" label="半场" align="center" width="108px"/>
-        <el-table-column prop="corner" label="角球" align="center" width="88px"/>
-        <el-table-column prop="trend" label="初始走势" align="center" width="142px">
-            <template #default="{row}" >
-                <div style="font-size: 12px;">
-                    <span class="trtext">{{ row.trend.a }}</span>
-                    <span class="trtext">{{ row.trend.b }}</span>
-                    <span class="trtext">{{ row.trend.c }}</span>
-                    <br>
-                    <span class="trtext">{{ row.trend.d }}</span>
-                    <span class="trtext">{{ row.trend.e }}</span>
-                    <span class="trtext">{{ row.trend.f }}</span>
-                </div>
-            </template>
-        </el-table-column>
-        <el-table-column  label="功能" align="center" width="108px">
-            <template #default="{row}">
-                <div class="function">
-                    <div @click="(event) => toggleStart(row, event)" class="icon">
-                        <img :src="row.startActive ? '/src/assets/table/start_red.png' : '/src/assets/table/start.png'" />
+    <div class="match_table">
+        <el-table :data="tableData.data" stripe style="width: 100%"  @row-click="handleRowClick">
+            <el-table-column prop="match" label="所属赛事" align="center" width="136px"/>
+            <el-table-column prop="time" label="时间" align="center" width="68px"/>
+            <el-table-column prop="status" label="状态" align="center" width="108px">
+                <template #default="{row}" >
+                    <span style="color: #ff3b30;"> {{ row.status }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="home" label="主场球队" align="right">
+                <template #default="{row}" >
+                    <span v-if="row.hred" class="red">{{ row.hred }}</span>
+                    <span v-if="row.hyellow" class="yellow">{{ row.hyellow }}</span>
+                    <span style="color: #8e8e93;font-size: 12px;margin-right: 5px;">{{row.hwin}}</span>
+                    <span> {{ row.home }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="point" label="比分" align="center" width="60px">
+                <template #default="{row}" >
+                    <span style="color: #ff3b30;font-weight: 600;"> {{ row.point }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="guest" label="客场球队" align="left">
+                <template #default="{row}" >
+                    <span> {{ row.guest }}</span>
+                    <span style="color: #8e8e93;font-size: 12px;margin:0 5px;">{{row.gwin}}</span>
+                    <span v-if="row.gyellow" class="yellow">{{ row.gyellow }}</span>
+                    <span v-if="row.gred" class="red">{{ row.gred }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="half" label="半场" align="center" width="108px"/>
+            <el-table-column prop="corner" label="角球" align="center" width="88px"/>
+            <el-table-column prop="trend" label="初始走势" align="center" width="142px">
+                <template #default="{row}" >
+                    <div style="font-size: 12px;">
+                        <span class="trtext">{{ row.trend.a }}</span>
+                        <span class="trtext">{{ row.trend.b }}</span>
+                        <span class="trtext">{{ row.trend.c }}</span>
+                        <br>
+                        <span class="trtext">{{ row.trend.d }}</span>
+                        <span class="trtext">{{ row.trend.e }}</span>
+                        <span class="trtext">{{ row.trend.f }}</span>
                     </div>
-                    <div @click="(event) => toggleTop(row, event)" class="icon">
-                        <img :src="row.topActive ? '/src/assets/table/top_red.png' : '/src/assets/table/top.png'" />
+                </template>
+            </el-table-column>
+            <el-table-column  label="功能" align="center" width="108px">
+                <template #default="{row}">
+                    <div class="function">
+                        <div @click="(event) => toggleStart(row, event)" class="icon">
+                            <img :src="row.startActive ? '/src/assets/table/start_red.png' : '/src/assets/table/start.png'" />
+                        </div>
+                        <div @click="(event) => toggleTop(row, event)" class="icon">
+                            <img :src="row.topActive ? '/src/assets/table/top_red.png' : '/src/assets/table/top.png'" />
+                        </div>
                     </div>
-                </div>
-            </template>
-        </el-table-column>
-    </el-table>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
 </template>
 <script setup>
 const router = useRouter();
@@ -125,28 +127,28 @@ const handleRowClick = (row) => {
 }
 </style>
 <style >
-.el-table th{
+.match_table .el-table th{
     height: 50px;
     line-height: 50px;
     font-size: 14px;
 } /* 表头 */
-.el-table td{
+.match_table .el-table td{
     height: 55px;
 } /* 表格 */
-.el-table .cell{
+.match_table .el-table .cell{
     padding: 0;
     font-weight: normal;
     color: #2c2c2e;
     font-size: 14px;
 }
-.el-table .el-table__cell{
+.match_table .el-table .el-table__cell{
     padding: 0;
 }
 .match_table .el-table__row--striped td {
   background-color: rgba(242, 242, 247, 0.5) !important;  /* 偶数行背景颜色 */
 }
 
-.el-table .el-table__row:hover {
+.match_table .el-table .el-table__row:hover {
   background-color: #e0e0e0 !important;  /* 鼠标悬停时的颜色 */
 }
 

@@ -167,7 +167,7 @@ const progressMain = ref([
 
 </style>
 <style>
- .el-progress__text {
+.content .el-progress__text {
   display: none;
 }
 </style>

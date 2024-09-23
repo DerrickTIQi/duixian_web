@@ -8,7 +8,7 @@
             />
         </div>
         <div class="content">
-            <div class="content_item" v-for="(item, index) in screenData" :key="index">
+            <div class="content_item" v-for="(item, index) in screenData" :key="index" :class="{first_item: index === 0}">
                 <div class="title">
                     <img src="@/assets/detail/logo.png"/>
                     <span class="title_text">{{ item.title_text }}</span>
@@ -61,15 +61,16 @@ const screenData = ref([
 ])
 </script>
 <style lang='scss' scoped>
-.content{
-    background-color: rgba(242, 242, 247, 0.5);
-    border-radius: 0px 10px 10px 10px;
-    width: 380PX;
-    height: 850px;
-    padding-top: 20px;
-}
 .content_item{
-    margin: 0 20px 20px 20px;
+    background-color: rgba(242, 242, 247, 0.5);
+    
+    width: 380px;
+    height: 160px;
+    box-sizing: border-box;
+    padding: 20px;
+}
+.first_item{
+    border-radius: 0px 10px 0 0;
 }
 .title{
     display: flex;
@@ -152,6 +153,11 @@ const screenData = ref([
     border-color: #c7c7cc !important; /* 更改分割线的颜色 */
 }
 .footer{
+    background-color: rgba(242, 242, 247, 0.5);
+    border-radius: 0 0 10px 10px;
+    width: 380px;
+    height: 40px;
+    padding-top: 20px;
     font-size: 14px;
     color: #2c2c2e;
     display: flex;
