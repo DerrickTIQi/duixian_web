@@ -5,6 +5,8 @@ import autoPage from '../utils/auto-route'
 const router = createRouter({
     history:createWebHashHistory(),
     routes:[
+        { path: '/login', component: () => import('@/views/login/index.vue') },
+        { path: '/register', component: () => import('@/views/login/index.vue') },
         {
             path: '/',
             component: () => import('@/components/Layout.vue'),

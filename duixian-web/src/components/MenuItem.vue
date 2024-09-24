@@ -12,19 +12,18 @@ const props = defineProps({
 </script>
 <style lang='scss' scoped>
 .menu-item{
-  margin-left: 60px;
-  height: 70px;
+  height: 64px;
+  padding: 0 16px;
   background-color: transparent;
 }
 
 .menu-item .underline {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  height: 6px;
-  background-color: red;
-  border-radius: 3px;
+  height: 4px;
+  background-color: #e92937;
   opacity: 0;  // 默认不可见
   transition: opacity 0.3s, transform 0.3s;
   transform: scaleX(0);  // 默认缩放至不可见
@@ -40,9 +39,8 @@ const props = defineProps({
 }
 
 .menu-item--active span {
-  color: red;  // 选中时字体颜色变为红色
+  color: #e92937;  // 选中时字体颜色变为红色
   --el-color-primary-light-9: #f5f5f5;
-  font-weight: 600;
 }
 
 .menu-item--active .underline {
@@ -53,6 +51,6 @@ const props = defineProps({
 
 <style>
 .menu-item--active{
-  background: none !important;
+  background: #f8f9fa !important;
 }
 </style>

@@ -27,10 +27,8 @@ const menus = [
   { label: '首页', path: '/Home' },
   { label: '赛事', path: '/Match'},
   { label: '筛选推单', path: '/Screen', },
-  { label: '数据服务', path: '/Service', },
   { label: '会员价格', path: '/Product', },
   { label: 'App下载', path: '/Download', },
-  { label: '登录', path: '/Login', },
 ]
 
 </script>
@@ -38,15 +36,15 @@ const menus = [
 .menu {
   flex: 1;
   display: flex;
-  background-color: #f5f5f5;
+  background-color: #fff;
 }
 :deep(.el-menu){
-    height: 70px;
-    background-color: #f5f5f5;
-    margin-right: 60px;
+    height: 64px;
+    background-color: #fff;
 }
 :deep(.el-menu-item){
   padding: 0;
-  font-size: 16px;
+  font-size: 14px;
+  color: #000;
 }
 </style>

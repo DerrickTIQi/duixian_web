@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="screen-important">
         <div style="padding-top: 20px;">
             <div class="content_item" v-for="(item, index) in contentData" :key="index">
                 <div class="times">
@@ -106,7 +106,7 @@ const eventIcons = ref([
 }
 .imgs{
     display: flex;
-    width: 780px;
+    width: 550px;
     height: 17px;
     margin-top: -10px;
 }

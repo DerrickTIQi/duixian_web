@@ -19,6 +19,10 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  background-color: #f8f9fa;
+}
+.app-content{
+    background-color: #f8f9fa;
 }
 .app-footer{
     margin-top: auto;
