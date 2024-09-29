@@ -1,6 +1,6 @@
 <template>
     <div class="screen-important">
-        <div style="padding-top: 20px;">
+        <div class="content">
             <div class="content_item" v-for="(item, index) in contentData" :key="index">
                 <div class="times">
                     <span >{{ item.time }}</span>
@@ -12,7 +12,6 @@
                     </div>
                     <span class="detail_text">{{ item.text }}</span>
                 </div>
-                
             </div>
         </div>
         <div class="imgs">
@@ -29,6 +28,8 @@ const contentData = ref([
     {time:'15\'',src: '/src/assets/detail/huangpai_big.png', text:'哈兰德故意犯规（曼城）'},
     {time:'35\'',src: '/src/assets/detail/hr_big.png', text:'哈兰德 换下 梅西（曼城）'},
     {time:'中场休息',src: '/src/assets/detail/shaozi.png', text:'上半场结束,当前比分1-1'},
+    {time:'88\'',src: '/src/assets/detail/jiaoqiu_big.png', text:'哈兰德 换下 梅西（曼城）'},
+    {time:'90\'',src: '/src/assets/detail/jiashi.png', text:'加时赛开始'},
     {time:'88\'',src: '/src/assets/detail/jiaoqiu_big.png', text:'哈兰德 换下 梅西（曼城）'},
     {time:'90\'',src: '/src/assets/detail/jiashi.png', text:'加时赛开始'},
 ])
@@ -50,9 +51,9 @@ const eventIcons = ref([
 .content{
     background-color: rgba(242, 242, 247, 0.5);
     border-radius: 0px 10px 10px 10px;
-    width: 800px;
+    width: 550px;
     height: 380px;
-    
+    overflow-y: auto; /* 允许垂直滚动 */
 }
 .content_item{
     display: flex;

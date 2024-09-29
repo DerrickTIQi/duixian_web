@@ -42,6 +42,10 @@ const contentData = ref([
     {time:'中场休息',src: '/src/assets/detail/shaozi.png', text:'上半场结束,当前比分1-1'},
     {time:'88\'',src: '/src/assets/detail/jiaoqiu_big.png', text:'哈兰德 换下 梅西（曼城）'},
     {time:'90\'',src: '/src/assets/detail/jiashi.png', text:'加时赛开始'},
+    {time:'88\'',src: '/src/assets/detail/jiaoqiu_big.png', text:'哈兰德 换下 梅西（曼城）'},
+    {time:'90\'',src: '/src/assets/detail/jiashi.png', text:'加时赛开始'},
+    {time:'88\'',src: '/src/assets/detail/jiaoqiu_big.png', text:'哈兰德 换下 梅西（曼城）'},
+    {time:'90\'',src: '/src/assets/detail/jiashi.png', text:'加时赛开始'},
 ])
 
 const eventIcons = ref([
@@ -63,7 +67,7 @@ const eventIcons = ref([
     border-radius: 0px 10px 10px 10px;
     width: 800px;
     height: 380px;
-    
+    overflow-y: auto; /* 允许垂直滚动 */
 }
 .content_item{
     display: flex;

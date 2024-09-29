@@ -20,6 +20,7 @@
             </div>
         </div>
         <div class="content">
+            <ScreenFilter v-if="selectedIndex === 0"/>
             <ScreenJinxuan v-if="selectedIndex === 1"/>
         </div>
 
@@ -27,6 +28,7 @@
 </template>
 <script setup>
 import ScreenJinxuan from './ScreenJinxuan.vue';
+import ScreenFilter from './ScreenFilter.vue';
 const titleData = ref([
     {label: '筛选器'},
     {label: '精选方案'},

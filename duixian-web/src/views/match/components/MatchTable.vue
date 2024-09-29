@@ -89,9 +89,7 @@ const tableData = reactive({
 
 
 const handleRowClick = (row) => {
-    router.push(`/Match/${row.id}`).then(() => {
-        window.location.reload();  // 刷新页面
-    })      
+    router.push(`/Match/${row.id}`)    
 }
 
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <el-menu-item class="menu-item menu-itemaaa" :class="{'menu-item--active': active,}" @click="$emit('select', menu.path)">
+    <el-menu-item class="menu-item" :class="{'menu-item--active': active,}" @click="$emit('select', menu.path)">
       <span>{{ menu.label }}</span>
       <div class="underline" />
     </el-menu-item>
