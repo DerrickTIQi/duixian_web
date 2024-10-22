@@ -7,6 +7,8 @@
     </div>
 </template>
 <script setup>
+import titleBig from '@/assets/detail/title_big.png'
+import titleSmall from '@/assets/detail/title_small.png'
 const props = defineProps({
     quxianText: String,
     quxianEnText: String,
@@ -15,8 +17,8 @@ const props = defineProps({
 
 const imgSrc = computed(() => {
   return props.type === 'big'
-    ? '/src/assets/detail/title_big.png'
-    : '/src/assets/detail/title_small.png';
+    ? titleBig
+    : titleSmall;
 })
 
 const quxianHWidth = computed(() => {

@@ -6,16 +6,16 @@
             <form class="form" @keyup.enter="handleLogin">
                 <div class="form-item">
                     <span class="form-item-text">账号</span>
-                    <input type="text"  placeholder="请输入您的账号" />
+                    <input type="text" v-model="formData.username"  placeholder="请输入您的账号" />
                 </div>
                 <div class="form-item">
                     <span class="form-item-text">邀请码</span>
-                    <input type="text"  placeholder="请填写邀请码(可不填)" />
+                    <input type="text" v-model="formData.invite_code"  placeholder="请填写邀请码(可不填)" />
                 </div>
                 <div class="form-item">
                     <span class="form-item-text">登录密码</span>
                     <div class="item2">
-                        <input :type="showPassword ? 'text' : 'password'"  placeholder="请输入您的登录密码" />
+                        <input :type="showPassword ? 'text' : 'password'"  v-model="formData.password" placeholder="请输入您的登录密码" />
                             <div class="form-item__eye form-item__icon" @click="showPassword = !showPassword">
                                 <img v-if="showPassword" src="@/assets/login/icon-eye.png" />
                                 <img v-else src="@/assets/login/icon-eye-close.png" />
@@ -25,7 +25,7 @@
                 <div class="form-item">
                     <span class="form-item-text">确认密码</span>
                     <div class="item2">
-                        <input :type="showPasswordtwo ? 'text' : 'password'"  placeholder="请再次输入您的登录密码" />
+                        <input :type="showPasswordtwo ? 'text' : 'password'" v-model="formData.password1"  placeholder="请再次输入您的登录密码" />
                             <div class="form-item__eye form-item__icon" @click="showPasswordtwo = !showPasswordtwo">
                                 <img v-if="showPasswordtwo" src="@/assets/login/icon-eye.png" />
                                 <img v-else src="@/assets/login/icon-eye-close.png" />
@@ -33,18 +33,37 @@
                     </div>
                 </div>
                 <div class="check">
-                    <el-checkbox size="large">同意并愿意遵守对线体育的 隐私政策 和 使用条款。</el-checkbox>
+                    <el-checkbox v-model="agreePolicy" size="large">同意并愿意遵守对线体育的 隐私政策 和 使用条款。</el-checkbox>
                 </div>
             </form>
-            <div v-if="loading" class="button-login button-login--disabled">登录中...</div>
-            <div v-else class="button-login" @click="handleLogin">登录</div>
+            <div v-if="loading" class="button-login button-login--disabled">注册中...</div>
+            <div v-else class="button-login" @click="handleLogin">注册</div>
             <div class="tip">已有账号？<a href="/#/login">立即登录</a></div>
         </div>
     </div>
 </template>
 <script setup>
+import { ElMessage } from 'element-plus';
+import { useRequest } from '@/hooks/request'
+const userStore = useUserStore()
+const formData = reactive({})
 const showPassword = ref(false)
 const showPasswordtwo = ref(false)
+const agreePolicy = ref(false) // 用于跟踪checkbox状态
+const { loading, request } = useRequest(async () => {
+  return register(formData).then(res => {
+    userStore.registerSuccess(res)
+  })
+}, false)
+
+const handleLogin = () => {
+  if (!formData.username || formData.username == '') return ElMessage.warning('请输入用户名')
+  if (!formData.password || formData.password == '') return ElMessage.warning('请输入密码')
+  if (!formData.password1 || formData.password1 == '') return ElMessage.warning('请再次输入密码')
+  if (formData.password !== formData.password1) return ElMessage.warning('确认密码不一致');
+  if (!agreePolicy.value) return ElMessage.warning('需要同意协议')
+  request()
+}
 </script>
 <style lang='scss' scoped>
 .login-form{

@@ -1,6 +1,5 @@
-import { createRouter,createWebHashHistory } from "vue-router"
+import { createRouter,createWebHashHistory, useRoute } from "vue-router"
 import autoPage from '../utils/auto-route'
-
 
 const router = createRouter({
     history:createWebHashHistory(),
@@ -13,9 +12,24 @@ const router = createRouter({
             children: [
                 ...autoPage(),
                 {
-                  path: '/Match/:id', // 赛事详情页
+                  path: '/Match/:id/:index', // 赛事详情页
                   component: () => import('@/views/match/matchDetail/index.vue'), // 赛事详情页组件
                   meta: { rootPath: '/Match' } // 确保activeMenu仍指向赛事
+                },
+                {
+                  path: '/MatchCourse/:id/:index', // 赛程赛事详情页
+                  component: () => import('@/views/match/matchCourseDetail/index.vue'), // 赛事详情页组件
+                  meta: { rootPath: '/Match' } // 确保activeMenu仍指向赛事
+                },
+                {
+                  path: '/MatchRecord/:id/:index', // 赛程赛事详情页
+                  component: () => import('@/views/match/matchCourseDetail/index.vue'), // 赛事详情页组件
+                  meta: { rootPath: '/Match' } // 确保activeMenu仍指向赛事
+                },
+                {
+                  path: '/Screen/:id/:index/:running', // 赛程赛事详情页
+                  component: () => import('@/views/match/matchCourseDetail/index.vue'), // 赛事详情页组件
+                  meta: { rootPath: '/Screen' } // 确保activeMenu仍指向筛选推单
                 }
               ],
             redirect: '/Home',

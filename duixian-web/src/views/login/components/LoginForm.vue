@@ -5,13 +5,13 @@
             <img src="@/assets/login/login-logo.png" class="login-logo"/>
             <form class="form" @keyup.enter="handleLogin">
                 <div class="form-item">
-                    <span class="form-item-text">账号</span>
-                    <input type="text"  placeholder="请输入您的账号" />
+                    <span class="form-item-text" >账号</span>
+                    <input type="text" v-model="formData.username"  placeholder="请输入您的账号" />
                 </div>
                 <div class="form-item">
                     <span class="form-item-text">密码</span>
                     <div class="item2">
-                        <input :type="showPassword ? 'text' : 'password'"  placeholder="请输入您的密码" />
+                        <input :type="showPassword ? 'text' : 'password'" v-model="formData.password" placeholder="请输入您的密码" />
                             <div class="form-item__eye form-item__icon" @click="showPassword = !showPassword">
                                 <img v-if="showPassword" src="@/assets/login/icon-eye.png" />
                                 <img v-else src="@/assets/login/icon-eye-close.png" />
@@ -26,7 +26,25 @@
     </div>
 </template>
 <script setup>
+import { ElMessage } from 'element-plus';
+import { login } from '../../../api/user';
+import { useRequest } from '@/hooks/request'
+const formData = reactive({})
 const showPassword = ref(false)
+const userStore = useUserStore()
+const { loading, request } = useRequest(async () => {
+  return login(formData).then(res => {
+    // console.log(token)
+    userStore.loginSuccess(res)
+  })
+}, false)
+
+const handleLogin = () => {
+  if (!formData.username || formData.username == '') return ElMessage.warning('请输入用户名')
+  if (!formData.password || formData.password == '') return ElMessage.warning('请输入密码')
+
+  request()
+}
 </script>
 <style lang='scss' scoped>
 .login-form{

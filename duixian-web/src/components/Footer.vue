@@ -26,7 +26,7 @@
                     声明：本网资讯仅供体育爱好者进行比赛浏览观看研究之用，任何人不得用于非法用途，否则责任自负。 
                 </sapn>
                 <sapn class="brand" >
-                    Copyright © 2022-2023 Duixian.ALL Rights Reserved
+                    Copyright © 2022-2024 Duixian.ALL Rights Reserved
                 </sapn>
             </div>
         </div>

@@ -15,7 +15,6 @@
 const route = useRoute()
 const router = useRouter()
 const activeMenu = computed(() => {
-  console.log(route)
   if (route.meta.rootPath) {
     return route.meta.rootPath
   } else {

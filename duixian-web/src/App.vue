@@ -1,8 +1,14 @@
 <template>
-  <RouterView />
+  <div id="app">
+    <RouterView /> <!-- 主内容区域 -->
+
+    <!-- 全局消息通知组件 -->
+    <app-message />
+  </div>
 </template>
 
-<script setup></script>
+<script setup>
+</script>
 
 <style scoped lang="scss">
 @font-face {

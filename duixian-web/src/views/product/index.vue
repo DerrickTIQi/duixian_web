@@ -2,7 +2,7 @@
     <div class="product">
         <div class="title">
             <div class="title-text1">我们为您提供两种不同的<span class="title-text2">会员服务</span></div>
-            <div class="title-text3">凡推荐满 3 人的用户，可直接免费升级成为特权会员并享受返利，赶紧让小伙伴们加入我们吧！</div>
+            <!-- <div class="title-text3">凡推荐满 3 人的用户，可直接免费升级成为特权会员并享受返利，赶紧让小伙伴们加入我们吧！</div> -->
         </div>
         <div class="content">
             <div class="left">
@@ -48,17 +48,17 @@ const lData = ref([
     {text: '查看全部实时比赛'},
     {text: '查看核心进攻压力数据图表'},
     {text: '查看赛中关键节点事件提醒'},
-    {text: '最全面的多功能赛选器'},
+    {text: '最全面的多功能筛选器'},
     {text: '快速筛选以及收藏筛选功能'},
-    {text: '保存的 3 个筛选方案可同时运行并实时提醒，让你不错过任何一场筛选比赛信息'},
+    {text: '可保存3个筛选方案同时运行并实时消息提醒，让你不错过任何一场筛选比赛信息'},
 ])
 const rData = ref([
     {text: '查看全部实时比赛'},
     {text: '查看核心进攻压力数据图表'},
     {text: '查看赛中关键节点事件提醒'},
-    {text: '最全面的多功能赛选器'},
+    {text: '最全面的多功能筛选器'},
     {text: '快速筛选以及收藏筛选功能'},
-    {text: '保存的 6 个筛选方案可同时运行并实时提醒，让你不错过任何一场筛选比赛信息'},
+    {text: '可保存6个筛选方案同时运行并实时消息提醒，让你不错过任何一场筛选比赛信息'},
 ])
 const show = ref(false)
 const connectClick = () => {

@@ -1,154 +1,299 @@
 <template>
-    <div class="match_table">
-        <el-table :data="tableData.data" stripe style="width: 100%"  @row-click="handleRowClick">
-            <el-table-column prop="match" label="所属赛事" align="center" width="136px"/>
-            <el-table-column prop="time" label="时间" align="center" width="68px"/>
-            <el-table-column prop="status" label="状态" align="center" width="108px">
-                <template #default="{row}" >
-                    <span style="color: #ff3b30;"> {{ row.status }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="home" label="主场球队" align="right">
-                <template #default="{row}" >
-                    <span v-if="row.hred" class="red">{{ row.hred }}</span>
-                    <span v-if="row.hyellow" class="yellow">{{ row.hyellow }}</span>
-                    <span style="color: #8e8e93;font-size: 12px;margin-right: 5px;">{{row.hwin}}</span>
-                    <span> {{ row.home }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="point" label="比分" align="center" width="60px">
-                <template #default="{row}" >
-                    <span style="color: #ff3b30;font-weight: 600;"> {{ row.point }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="guest" label="客场球队" align="left">
-                <template #default="{row}" >
-                    <span> {{ row.guest }}</span>
-                    <span style="color: #8e8e93;font-size: 12px;margin:0 5px;">{{row.gwin}}</span>
-                    <span v-if="row.gyellow" class="yellow">{{ row.gyellow }}</span>
-                    <span v-if="row.gred" class="red">{{ row.gred }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="half" label="半场" align="center" width="108px"/>
-            <el-table-column prop="corner" label="角球" align="center" width="88px"/>
-            <el-table-column prop="trend" label="初始走势" align="center" width="142px">
-                <template #default="{row}" >
-                    <div style="font-size: 12px;">
-                        <span class="trtext">{{ row.trend.a }}</span>
-                        <span class="trtext">{{ row.trend.b }}</span>
-                        <span class="trtext">{{ row.trend.c }}</span>
-                        <br>
-                        <span class="trtext">{{ row.trend.d }}</span>
-                        <span class="trtext">{{ row.trend.e }}</span>
-                        <span class="trtext">{{ row.trend.f }}</span>
-                    </div>
-                </template>
-            </el-table-column>
-            <el-table-column  label="功能" align="center" width="108px">
-                <template #default="{row}">
-                    <div class="function">
-                        <div @click="(event) => toggleStart(row, event)" class="icon">
-                            <img :src="row.startActive ? '/src/assets/table/start_red.png' : '/src/assets/table/start.png'" />
-                        </div>
-                        <div @click="(event) => toggleTop(row, event)" class="icon">
-                            <img :src="row.topActive ? '/src/assets/table/top_red.png' : '/src/assets/table/top.png'" />
-                        </div>
-                    </div>
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
+  <div class="match_table">
+    <el-table
+      :data="tableData"
+      style="width: 100%"
+      @row-click="handleRowClick"
+    >
+      <el-table-column
+        prop="match"
+        label="所属赛事"
+        align="center"
+        width="200px"
+      >
+        <template #default="{ row }">
+          {{ row.NCN?.LEAGUE }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="time" label="时间" align="center" width="100px">
+        <template #default="{ row }">
+          {{ row.odds_datetime?.date_cut }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="状态" align="center" width="75px">
+        <template #default="{ row }">
+          <span v-if="activeIndex === 2 && row.NCN?.TIMER >= 90">完场</span>
+          <span v-else-if="row.NCN?.TIMER == 0">未开始</span>
+          <div v-else class="status-time" style="color: #ff3b30;">
+            <img :src="geticon(row.NCN?.TIMER)" style="margin-right: 8px;"/>
+            <span :class="['breathing', { fade: !isVisible }]"> {{ row.NCN?.TIMER }}'</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="home" label="主场球队" align="right">
+        <template #default="{ row }">
+          <span v-if="parseInt(row.NCN?.RED?.split(':')[0]) > 0" class="red">{{ parseInt(row.NCN?.RED?.split(":")[0])}}</span>
+          <span v-if="parseInt(row.NCN?.YELLOW?.split(':')[0]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[0])}}</span>
+          <span style="color: #8e8e93; font-size: 12px; margin-right: 5px">{{ row.hwin}}</span>
+          <span> {{ row.NCN?.TEAM_H }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="point" label="比分" align="center" width="60px">
+        <template #default="{ row }">
+          <span style="color: #ff3b30; font-weight: 600">
+            {{ row.NCN?.SCORE }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="guest" label="客场球队" align="left">
+        <template #default="{ row }">
+          <span> {{ row.NCN?.TEAM_C }}</span>
+          <span style="color: #8e8e93; font-size: 12px; margin: 0 5px">{{ row.gwin}}</span>
+          <span  v-if="parseInt(row.NCN?.YELLOW?.split(':')[1]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[1]) }}</span>
+          <span v-if="parseInt(row.NCN?.RED?.split(':')[1]) > 0" class="red">{{parseInt(row.NCN?.RED?.split(":")[1])}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column v-if="showHalfColumn" prop="half" label="半场" align="center" width="70px">
+        <template #default="{ row }">
+          {{ row.NCN?.["H:SCORE"] }}
+        </template>
+      </el-table-column>
+      <el-table-column v-if="showHalfColumn" prop="corner" label="角球" align="center" width="70px">
+        <template #default="{ row }">
+          <img src="@/assets/detail/jiaoqiu.png"/>
+          {{ row.NCN?.["CN:SCORE"] }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="trend"
+        label="初始走势"
+        align="center"
+        width="140px"
+      >
+        <template #default="{row}" >
+          <div style="font-size: 12px;">
+            <span class="trtext">{{ row.odds_early?.AH?.hrfsp }}</span>
+            <span class="trtext trtext1">{{ row.odds_early?.AH?.hrf }}</span>
+            <span class="trtext">{{ row.odds_early?.AH?.grfsp }}</span>
+            <br>
+            <span class="trtext">{{ row.odds_early?.OU?.hdxsp }}</span>
+            <span class="trtext trtext2">{{ row.odds_early?.OU?.hdx }}</span>
+            <span class="trtext">{{ row.odds_early?.OU?.hdxsp }}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="功能" align="center" width="85px">
+        <template #default="{ row }">
+          <div class="function">
+            <div v-if="userRole !== 'tourist'" @click="(event) => toggleStart(row, event)" class="icon">
+              <img :src="row.FA ? startRed : start "/>
+            </div>
+            <div @click="(event) => toggleTop(row, event)" class="icon">
+              <img :src="row.topActive ? topRed : top"/>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 <script setup>
+import startRed from '@/assets/table/start_red.png'
+import start from '@/assets/table/start.png'
+import topRed from '@/assets/table/top_red.png'
+import top from '@/assets/table/top.png'
+import icon15 from '@/assets/table/icon-15.png'
+import icon30 from '@/assets/table/icon-30.png'
+import icon45 from '@/assets/table/icon-45.png'
+import icon60 from '@/assets/table/icon-60.png'
+import icon75 from '@/assets/table/icon-75.png'
+import icon90 from '@/assets/table/icon-90.png'
+import icon90a from '@/assets/table/icon-90+.png'
+
+
+import { ElMessage } from 'element-plus';
+import { favorAdd, favorDelete, favorLive, favorUpLive } from '../../../api/match';
+import { onMounted, onUnmounted } from 'vue';
+const props = defineProps({
+  data: Object,
+  flag: String,
+  activeIndex: Int32Array
+});
+const emit = defineEmits()
+// 计算用户角色
+const userStore = useUserStore();
+const userRole = computed(() => userStore.roles);
+// 根据 tableData 的第一个元素判断是否显示半场列
+const showHalfColumn = computed(() => {
+  return tableData.value.length > 0 && tableData.value[0]?.NCN?.["H:SCORE"] !== undefined && tableData.value[0]?.NCN?.["CN:SCORE"] !== undefined;
+})
 const router = useRouter();
-const toggleStart = (row,event) => {
-    event.stopPropagation();  // 阻止事件冒泡
-    row.startActive = !row.startActive;
+const toggleStart = (row, event) => {
+  event.stopPropagation(); // 阻止事件冒泡
+  if(row.FA === 0){
+    favorAdd({mid: row.KEY}).then(() => {
+      row.FA = !row.FA;
+      ElMessage.success('已收藏')
+    })
+  }
+  if(row.FA === 1){
+    favorDelete({mid: row.KEY}).then(() => {
+      row.FA = !row.FA;
+      emit('update-data');
+      ElMessage.success('取消收藏')
+    })
+  }
+};
+const geticon = (time) => {
+  if(time > 0 && time <= 15){
+    return icon15
+  }else if(time > 15 && time <= 30){
+    return icon30
+  }else if(time > 30 && time <= 45){
+    return icon45
+  }else if(time > 45 && time <= 60){
+    return icon60
+  }else if(time > 60 && time <= 75){
+    return icon75
+  }else if(time > 75 && time <= 90){
+    return icon90
+  }else if(time > 90){
+    return icon90a
+  }
 }
+const toggleTop = (row, event) => {
+  event.stopPropagation(); // 阻止事件冒泡
+  // 如果是第一次点击置顶，则保存该行的原始索引
+  if (!row.topActive && row.originalIndex === undefined) {
+    row.originalIndex = tableData.value.indexOf(row); // 保存原始位置
+  }
 
+  // 切换置顶状态
+  row.topActive = !row.topActive;
 
-const toggleTop = (row,event) => {
-    event.stopPropagation();  // 阻止事件冒泡
-    row.topActive = !row.topActive;
-}
+  if (row.topActive) {
+    // 置顶：将点击的 row 移到第一位
+    const index = tableData.value.indexOf(row);
+    if (index > -1) {
+      tableData.value.splice(index, 1); // 从原位置移除
+      tableData.value.unshift(row); // 将其添加到第一位
+    }
+  } else {
+    // 取消置顶：将 row 移回原始位置
+    const originalIndex = row.originalIndex; // 获取保存的原始索引
+    if (originalIndex !== undefined) {
+      tableData.value.splice(tableData.value.indexOf(row), 1); // 从置顶位置移除
+      tableData.value.splice(originalIndex, 0, row); // 插入到原始索引位置
+    }
+    delete row.originalIndex; // 删除原始位置的记录
+  }
+};
 
-const tableData = reactive({
-    data:[
-        {id:'1', match:'中超', time: '07:00', status:'83\'', home:'北京国安',hwin:'[18]',hred:'2',hyellow:'3', point:'0-1', guest:'成都蓉城',gwin:'[2]',gred:'',gyellow:'2', half:'0-1', corner:'1-6',trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'2', match:'欧洲冠军杯', time: '07:00', status:'83\'', home:'阿纳波尔',hwin:'[2]',hred:'2',hyellow:'3', point:'2-2', guest:'夏洛特独立队',gwin:'[2]',gred:'3',gyellow:'9', half:'1-1', corner:'3-5', trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'3', match:'中超', time: '07:00', status:'83\'', home:'北京国安',hwin:'[18]',hred:'2',hyellow:'3', point:'0-1', guest:'成都蓉城',gwin:'[2]',gred:'',gyellow:'2', half:'0-1', corner:'1-6',trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'4', match:'欧洲冠军杯', time: '07:00', status:'83\'', home:'阿纳波尔',hwin:'[2]',hred:'2',hyellow:'3', point:'2-2', guest:'夏洛特独立队',gwin:'[2]',gred:'3',gyellow:'9', half:'1-1', corner:'3-5', trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'5', match:'中超', time: '07:00', status:'83\'', home:'北京国安',hwin:'[18]',hred:'2',hyellow:'3', point:'0-1', guest:'成都蓉城',gwin:'[2]',gred:'',gyellow:'2', half:'0-1', corner:'1-6',trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'6', match:'欧洲冠军杯', time: '07:00', status:'83\'', home:'阿纳波尔',hwin:'[2]',hred:'2',hyellow:'3', point:'2-2', guest:'夏洛特独立队',gwin:'[2]',gred:'3',gyellow:'9', half:'1-1', corner:'3-5', trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'7', match:'中超', time: '07:00', status:'83\'', home:'北京国安',hwin:'[18]',hred:'2',hyellow:'3', point:'0-1', guest:'成都蓉城',gwin:'[2]',gred:'',gyellow:'2', half:'0-1', corner:'1-6',trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'8', match:'欧洲冠军杯', time: '07:00', status:'83\'', home:'阿纳波尔',hwin:'[2]',hred:'2',hyellow:'3', point:'2-2', guest:'夏洛特独立队',gwin:'[2]',gred:'3',gyellow:'9', half:'1-1', corner:'3-5', trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'9', match:'中超', time: '07:00', status:'83\'', home:'北京国安',hwin:'[18]',hred:'2',hyellow:'3', point:'0-1', guest:'成都蓉城',gwin:'[2]',gred:'',gyellow:'2', half:'0-1', corner:'1-6',trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-        {id:'10', match:'欧洲冠军杯', time: '07:00', status:'83\'', home:'阿纳波尔',hwin:'[2]',hred:'2',hyellow:'3', point:'2-2', guest:'夏洛特独立队',gwin:'[2]',gred:'3',gyellow:'9', half:'1-1', corner:'3-5', trend:{a:'1.1',b:'2.5',c:'1.8',d:'1.2',e:'0.5',f:'1.9'},startActive:false,topActive:false},
-    ]
+const tableData = computed(() => {
+  return props.data || []; // 如果 props.data 存在，返回它，否则返回一个空数组
 })
 
 
 const handleRowClick = (row) => {
-    router.push(`/Match/${row.id}`)    
+  setTimeout(() => {
+    if(props.flag === 'course'){
+      router.push(`/MatchCourse/${row.KEY}/${props.activeIndex}`);
+    }else if(props.flag === 'record'){
+      router.push(`/MatchRecord/${row.KEY}/${props.activeIndex}`);
+    }else{
+      router.push(`/Match/${row.KEY}/${props.activeIndex}`);
+    }
+  }, 0);
 }
 
+const isVisible = ref(true);
+let intervalId;
+
+onMounted(() => {
+  // 每两秒切换一次可见性
+  intervalId = setInterval(() => {
+    isVisible.value = !isVisible.value;
+  }, 1000); // 每2秒切换一次可见性
+});
+
+onUnmounted(() => {
+  // 清除定时器
+  clearInterval(intervalId);
+});
 </script>
 <style lang='scss' scoped>
-.el-table{
-    --el-table-header-bg-color: #f2f2f7;
-    border-radius: 5px;
+.match_table{
+  z-index: 1000 ;
 }
-.red{
-    background-color: rgba(255, 59, 48, 1);
-    border-radius: 3px;
-    color: #fff;
-    padding: 0 2px 2px 4px;
-    margin-right: 5px;
+.breathing {
+  transition: opacity 1s ease; /* 设置过渡效果 */
 }
-.yellow{
-    background-color: rgba(255, 204, 0, 1);
-    border-radius: 3px;
-    color: #fff;
-    padding: 0 2px 2px 4px;
-    margin-right: 5px;
+.fade {
+  opacity: 0; /* 透明度为0，隐藏元素 */
 }
-.trtext{
-    margin: 0 11px;
+.el-table {
+  --el-table-header-bg-color: #f2f2f7;
+  border-radius: 5px;
 }
-.function{
-    display: flex;
-    justify-content: center; /* 水平居中 */
-    align-items: center; /* 垂直居中 */
+.red {
+  background-color: #e92937;
+  border-radius: 3px;
+  color: #fff;
+  padding: 0 2px;
+  margin-right: 5px;
 }
-.icon{
-    margin: 0 5px;
+.yellow {
+  background-color: #ff9000;
+  border-radius: 3px;
+  color: #fff;
+  padding: 0 2px;
+  margin-right: 5px;
+}
+.trtext {
+  margin: 0 4px;
+}
+.trtext1{
+  color: green;
+}
+.trtext2{
+  color: #e92937;
+}
+.function {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+.icon {
+  margin: 0 5px;
+}
+.status-time{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
 <style >
-.match_table .el-table th{
-    height: 50px;
-    line-height: 50px;
-    font-size: 14px;
+.match_table .el-table th {
+  height: 50px;
+  line-height: 50px;
+  font-size: 14px;
 } /* 表头 */
-.match_table .el-table td{
-    height: 55px;
+.match_table .el-table td {
+  height: 55px;
 } /* 表格 */
-.match_table .el-table .cell{
-    padding: 0;
-    font-weight: normal;
-    color: #2c2c2e;
-    font-size: 14px;
+.match_table .el-table .cell {
+  padding: 0;
+  font-weight: normal;
+  color: #2c2c2e;
+  font-size: 14px;
 }
-.match_table .el-table .el-table__cell{
-    padding: 0;
+.match_table .el-table .el-table__cell {
+  padding: 0;
 }
-.match_table .el-table__row--striped td {
-  background-color: rgba(242, 242, 247, 0.5) !important;  /* 偶数行背景颜色 */
-}
+
 
 .match_table .el-table .el-table__row:hover {
-  background-color: #e0e0e0 !important;  /* 鼠标悬停时的颜色 */
+  background-color: #e0e0e0 !important; /* 鼠标悬停时的颜色 */
 }
-
 </style>
 

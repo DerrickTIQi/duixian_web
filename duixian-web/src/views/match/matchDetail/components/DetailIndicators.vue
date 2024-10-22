@@ -43,22 +43,32 @@
     </div>
 </template>
 <script setup>
+import { onMounted } from 'vue';
 import DetailTitle from './DetailTitle.vue';
-const progressTop = ref([
-    {label:'全场压力', percentage:'49',},
-    {label:'平均压力', percentage:'20',},
-    {label:'近10分钟压力', percentage:'37',}
+const props = defineProps({
+  data: Object,
+});
+
+const progressTop = computed(() => [
+  { label: '全场压力', percentage: props.data?.OV_INFO?.oi?.average + props.data?.OV_INFO?.oi?.current || 0 }, // 如果有需要全场压力的字段可以替换
+  { label: '平均压力', percentage: props.data?.OV_INFO?.oi?.average || 0 },
+  { label: '近10分钟压力', percentage: props.data?.OV_INFO?.oi?.current || 0 }
+]);
+
+// home 和 away 的进攻数据
+const progressMain = computed(() => [
+  { label: '控球率', hteamper: props.data?.OV_INFO?.stats?.home?.possession || 0, gteamper: props.data?.OV_INFO?.stats?.away?.possession || 0 },
+  { label: '射正', hteamper: props.data?.OV_INFO?.stats?.home?.shotontarget || 0, gteamper: props.data?.OV_INFO?.stats?.away?.shotontarget || 0 },
+  { label: '进攻', hteamper: props.data?.OV_INFO?.stats?.home?.attacks || 0, gteamper: props.data?.OV_INFO?.stats?.away?.attacks || 0 },
+  { label: '射偏', hteamper: props.data?.OV_INFO?.stats?.home?.shotofftarget || 0, gteamper: props.data?.OV_INFO?.stats?.away?.shotofftarget || 0 },
+  { label: '危险进攻', hteamper: props.data?.OV_INFO?.stats?.home?.dangerousattacks || 0, gteamper: props.data?.OV_INFO?.stats?.away?.dangerousattacks || 0 },
+  { label: '红牌', hteamper: props.data?.OV_INFO?.stats?.home?.redcards || 0, gteamper: props.data?.OV_INFO?.stats?.away?.redcards || 0 },
+  { label: '角球', hteamper: props.data?.OV_INFO?.stats?.home?.corners || 0, gteamper: props.data?.OV_INFO?.stats?.away?.corners || 0 },
+  { label: '黄牌', hteamper: props.data?.OV_INFO?.stats?.home?.yellowcards || 0, gteamper: props.data?.OV_INFO?.stats?.away?.yellowcards || 0 }
 ])
-const progressMain = ref([
-    {label:'控球率',hteamper:'67',gteamper:'33'},
-    {label:'射正',hteamper:'35',gteamper:'11'},
-    {label:'进攻',hteamper:'136',gteamper:'81'},
-    {label:'射偏',hteamper:'1',gteamper:'2'},
-    {label:'危险进攻',hteamper:'19',gteamper:'54'},
-    {label:'红牌',hteamper:'0',gteamper:'0'},
-    {label:'角球',hteamper:'5',gteamper:'2'},
-    {label:'黄牌',hteamper:'1',gteamper:'3'},
-])
+
+
+
 </script>
 <style lang='scss' scoped>
 .content{
