@@ -2,7 +2,7 @@
     <div class="login-form">
         <div class="form-main">
             <div class="title">注册账号</div>
-            <img src="@/assets/login/login-logo.png" class="login-logo"/>
+            <img src="@/assets/login/login-logo.png" class="login-logo" />
             <form class="form" @keyup.enter="handleLogin">
                 <div class="form-item">
                     <span class="form-item-text">账号</span>
@@ -38,7 +38,7 @@
             </form>
             <div v-if="loading" class="button-login button-login--disabled">注册中...</div>
             <div v-else class="button-login" @click="handleLogin">注册</div>
-            <div class="tip">已有账号？<a href="/#/login">立即登录</a></div>
+            <div class="tip">已有账号？<a href="#/login">立即登录</a></div>
         </div>
     </div>
 </template>
@@ -64,6 +64,7 @@ const handleLogin = () => {
   if (!agreePolicy.value) return ElMessage.warning('需要同意协议')
   request()
 }
+
 </script>
 <style lang='scss' scoped>
 .login-form{

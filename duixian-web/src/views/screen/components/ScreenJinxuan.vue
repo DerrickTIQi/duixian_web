@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class="caozuo">
-                    <div class="fuhe" @click="conformClick(item.plan_info.title,item.plan_info.code,index)">
+                    <div class="fuhe" @click="conformClick(item.plan_info.title,item.plan_info.code,index,item.own)">
                         <span>符合方案的近10场比赛</span>
                         <img src="@/assets/detail/blackright.png" />
                     </div>
@@ -65,7 +65,7 @@
             </div>
         </div>
         <app-error :show="showError" :content="errorMessage" @close="showError = !showError"/>
-        <ScreenTable v-if="dialogCode" v-model="show" :index="selectedIndex" :dialogTitle="dialogTitle" :dialogCode="dialogCode" :selectedIndex="menuIndex" :key="dialogCode"/>
+        <ScreenTable v-if="dialogCode" v-model="show"  :dialogTitle="dialogTitle" :dialogCode="dialogCode" :dialogOwn="dialogOwn"  :key="dialogCode"/>
     </div>
 </template>
 <script setup>
@@ -77,10 +77,8 @@ import { buyPlan } from '../../../api/screen';
 import ScreenTable from './ScreenTable.vue';
 const props = defineProps({
     data:Array,
-    selectedIndex: Int32Array
 })
 
-const menuIndex = props.selectedIndex
 // 计算用户角色
 const userStore = useUserStore();
 const userRole = computed(() => userStore.roles);
@@ -108,13 +106,13 @@ if(userRole.value !== 'tourist'){
     });
 }
 const show = ref(false)
-const selectedIndex = ref(null)
 const dialogTitle = ref('')
 const dialogCode = ref('')
-const conformClick = (title, code, index) => {
+const dialogOwn = ref('')
+const conformClick = (title, code, index,own) => {
     dialogTitle.value = title
     dialogCode.value = code
-    selectedIndex.value = index;
+    dialogOwn.value = own
     show.value = true
 }
 

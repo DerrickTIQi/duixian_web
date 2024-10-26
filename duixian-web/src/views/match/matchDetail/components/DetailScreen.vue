@@ -86,16 +86,16 @@ const getIconSrc = (ratio) => {
 }
 const router = useRouter();
 const show = () => {
-    router.push('/Screen')
+    router.push('/screen/jinxuan')
 }
 // 跳转到 /Product 页面开通会员
 const openProductPage = () => {
-  router.push('/Product');
+  router.push('/product');
 };
 </script>
 <style lang='scss' scoped>
 .content_item{
-    background-color: rgba(242, 242, 247, 0.5);
+    background-color: rgba(242, 242, 247, 1);
     
     width: 380px;
     height: 160px;
@@ -103,7 +103,7 @@ const openProductPage = () => {
     padding: 20px;
 }
 .no-access{
-    background-color: rgba(242, 242, 247, 0.5);
+    background-color: rgba(242, 242, 247, 1);
     width: 380px;
     height: 160px;
     box-sizing: border-box;
@@ -209,6 +209,7 @@ const openProductPage = () => {
     color: #2c2c2e;
     display: flex;
     justify-content: center; /* 水平居中 */
+    cursor: pointer;
 }
 .footer img{
     height: 13px;

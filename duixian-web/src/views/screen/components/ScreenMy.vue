@@ -113,7 +113,7 @@ const goToLogin = () =>{
     router.push('/login')
 }
 const goToJinXuan = () =>{
-    emit('update:selectedIndex', 1);
+    router.push('/screen/jinxuan')
 }
 const show = ref(false)
 const selectedIndex = ref(null)
@@ -250,11 +250,11 @@ const cancel = (item,index) => {
     display:flex;
     align-items: center; /* 垂直居中 */
     margin-top: 12px;
-    margin-left: -20px;
+    margin-left: -18px;
 }
 .bottom_item{
-    margin-right: 16px;
-    margin-left: 20px;
+    margin-right: 14px;
+    margin-left: 18px;
 }
 .bottom_text{
     font-size: 12px;

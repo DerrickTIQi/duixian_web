@@ -1,7 +1,7 @@
 <template>
-    <div class="right">
+    <div class="right" v-loading="fullscreenLoading">
         <el-scrollbar height="90vh">
-            <div class="content_item" v-for="(item,index) in matchData" :key="index">
+            <div class="content_item" v-for="(item,index) in matchData" :key="index" >
                 <div class="title">
                     <div class="title_text">
                         <div v-if="userRole !== 'tourist'" @click="toggleStart(index)" class="icon">
@@ -16,7 +16,8 @@
                         </div>
                         <div class="team">{{ item.NCN?.TEAM_C }}</div>
                         <div class="status">
-                            <span :class="['breathing', { fade: !isVisible }]">{{ item.NCN?.TIMER }}'</span>
+                            {{ item.NCN?.TIMER }}
+                            <span :class="['breathing', { fade: !isVisible }]">'</span>
                         </div>
                     </div>
                     <div class="progress-container">
@@ -113,9 +114,11 @@ const emit = defineEmits(['updateCount','nowFavorData']);
 const props = defineProps({
     start:Boolean
 })
-
+const fullscreenLoading = ref(true); // 控制加载遮罩
 
 const startStatus = props.start ? JSON.parse(JSON.stringify(props.start)) : ''
+
+
 const favorData = ref([]) //收藏的比赛
 // 获取 myPlans 的 active plan
 const fetchActivePlans = async (resetSelectedIndex = false) => {
@@ -149,7 +152,9 @@ const fetchActivePlans = async (resetSelectedIndex = false) => {
             const ftInplayRes = await ftInplay(body);
             emit('updateCount', ftInplayRes.totalCount);  // 返回totalCount到父组件
             favorData.value = ftInplayRes.matches.filter(item => item.FA === 1); // 保存筛选后收藏的比赛
-
+            // if(startStatus === 'true'){
+            //     matchData.value = favorData.value
+            // }
             // 如果需要重置 selectedIndex，则传递 true
             updateMatchData(ftInplayRes, resetSelectedIndex); 
         }
@@ -164,18 +169,22 @@ const updateMatchData = (ftInplayRes, isFiltering = false) => {
             ...match,
             selectedIndex: 0  // 重置为 0
         }));
+        fullscreenLoading.value = false; // 隐藏加载遮罩
     } else {
         // 更新数据时保留之前的 selectedIndex
         matchData.value = ftInplayRes.matches.map((match, index) => ({
             ...match,
             selectedIndex: matchData.value[index]?.selectedIndex ?? 0  // 保持原来的 selectedIndex，如果没有则设置为0
         }));
+        fullscreenLoading.value = false; // 隐藏加载遮罩
     }
 };
 
 // 监听 start 的变化
 watch(() => props.start, () => {
+    fullscreenLoading.value = true;
     fetchActivePlans(false);
+    fullscreenLoading.value = false;
 });
 
 // 提取 active 的 plan 的 code
@@ -233,9 +242,11 @@ let updateTimeoutId = null;  // 保存 setTimeout 返回的 ID
 let visibilityIntervalId;
 
 watch(() => EventBus.chartUpdate, (newval) => {
+    fullscreenLoading.value = true;
     if(newval){
         fetchActivePlans(true)
         EventBus.chartUpdate = false
+        fullscreenLoading.value = false;
     }
 })
 const showError = ref(false); // 控制通知的显示
@@ -264,7 +275,7 @@ const checkTriggerPoint = () => {
 
 onMounted(() => {
     window.addEventListener('scroll', checkTriggerPoint);
-    fetchActivePlans();  // 页面加载时获取 active plans
+    // fetchActivePlans();  // 页面加载时获取 active plans
      // 定义一个函数来调用 updateTime 并使用 setTimeout 进行递归调用
      const startUpdateTime = () => {
         updateTime();  // 调用更新函数
@@ -299,7 +310,8 @@ onUnmounted(() => {
   opacity: 0; /* 透明度为0，隐藏元素 */
 }
 .content_item{
-    background-color: rgba(242, 242, 247, 0.5);
+    background-color: rgba(242, 242, 247, 1);
+    // background-color: #C0C0C0;
     border-radius: 10px;
     height: 603px;
     width: 1480px;

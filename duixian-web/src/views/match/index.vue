@@ -5,10 +5,11 @@
         class="text"
         v-for="(item, index) in naviItem"
         :key="index"
-        :class="{ active: activeIndex === index }"
-        @click="activeIndex = index"
+        :class="{ active: route.path === getPath(index) }" 
       >
-        <span>{{ item }}</span>
+        <router-link :to="getPath(index)">
+          <span>{{ item }}</span>
+        </router-link>
       </div>
       <div class="feature" ref="featureContainer">
         <div class="audio" @click="toggleSoundMenu" :class="{ active: isSoundMenuVisible }">
@@ -57,11 +58,11 @@
       </div>
     </div>
     <div class="table">
-      <MatchTable v-if="activeIndex === 0" :data="tableData" :activeIndex="activeIndex" />
-      <MatchCourse v-if="activeIndex === 1" :activeIndex="activeIndex"/>
-      <MatchResult v-if="activeIndex === 2" :activeIndex="activeIndex"/>
-      <MatchFollow v-if="activeIndex === 3" :activeIndex="activeIndex"/>
-      <MatchFollowC v-if="activeIndex === 4" :activeIndex="activeIndex"/>
+      <MatchTable v-if="route.path === '/match/live'" :data="tableData"  />
+      <MatchCourse v-if="route.path === '/match/early'" />
+      <MatchResult v-if="route.path === '/match/record'" />
+      <MatchFollow v-if="route.path === '/match/followlive'" />
+      <MatchFollowC v-if="route.path === '/match/followearly'" />
     </div>
     <div class="footer">暂无更多数据~</div>
     
@@ -88,7 +89,7 @@
     </div>
     <!-- <app-goal /> -->
     <app-error :show="showError" :content="errorMessage" @close="showError = !showError"/>
-    <div v-if="userRole === 'tourist' || userRole === 'normal'" ref="triggerPoint" class="trigger-point"></div> <!-- 空白触发点 -->
+    <div v-if="(userRole === 'tourist' || userRole === 'normal') && (route.path.split('/')[2] === 'live')" ref="triggerPoint" class="trigger-point"></div> <!-- 空白触发点 -->
   </div>
 </template>
 <script setup>
@@ -111,12 +112,21 @@ import { detailLive, listUpLive } from "../../api/match";
 import { ElNotification } from "element-plus";
 
 const route = useRoute();
+const router = useRouter();
 const naviItem = computed(() => {
   const allItems = ["进行中", "赛程", "赛果", "关注(进行中)", "关注(赛程)"];
   return userRole.value.includes('tourist') ? allItems.slice(0, 3) : allItems;
 });
 // const activeIndex = ref(0);
-const activeIndex = ref(route.query.activeIndex ? parseInt(route.query.activeIndex) : 0); // 默认值为 0 或传递的索引
+// const activeIndex = ref(route.query.activeIndex ? parseInt(route.query.activeIndex) : 0); // 默认值为 0 或传递的索引
+
+// 根据索引返回对应的路径
+const getPath = (index) => {
+  const paths = ['/match/live', '/match/early', '/match/record', '/match/followlive', '/match/followearly'];
+  return paths[index] || '/';
+};
+const pathname = ref(location.hash)
+
 const tableData = ref([]);
 const selectedSound = ref("默认");
 const sounds = [
@@ -420,18 +430,32 @@ const updateTimeAndFetch = () => {
 
 let intervalId = null;  // 将定时器定义为全局变量，以便在任何地方都能访问和清除
 
-// 监听 activeIndex 的变化
-watch(activeIndex, (newIndex) => {
-  if (newIndex === 0) {
-    // MatchTable 激活时调用接口并启动定时器
-    fetchAllLiveData(); // 初次获取全部数据
-    if (!intervalId) {  // 确保没有定时器在运行时才启动新的定时器
-      intervalId = setInterval(updateTimeAndFetch, 3000); // 每3秒更新一次
+// 监听 pathname 的变化
+// watch(pathname, (newPath) => {
+//   console.log(newPath);
+  
+//   if (newPath === '/match/live') {
+//     // MatchTable 激活时调用接口并启动定时器
+//     fetchAllLiveData(); // 初次获取全部数据
+//     if (!intervalId) {  // 确保没有定时器在运行时才启动新的定时器
+//       intervalId = setInterval(updateTimeAndFetch, 3000); // 每3秒更新一次
+//     }
+//   } else {
+//     // 切换到其他组件时清除定时器
+//     clearInterval(intervalId); 
+//     intervalId = null; // 清除定时器后将变量置为 null
+//   }
+// });
+//使用 router.afterEach 监听路由变化
+router.afterEach((to) => {
+  if (to.path === '/match/live') {
+    fetchAllLiveData();
+    if (!intervalId) {
+      intervalId = setInterval(updateTimeAndFetch, 3000);
     }
   } else {
-    // 切换到其他组件时清除定时器
-    clearInterval(intervalId); 
-    intervalId = null; // 清除定时器后将变量置为 null
+    clearInterval(intervalId);
+    intervalId = null;
   }
 });
 
@@ -447,7 +471,7 @@ onMounted(() => {
   }
   document.addEventListener('click', closeMenus);
   window.addEventListener('scroll', checkTriggerPoint);
-  if (activeIndex.value === 0) {
+  if (route.path === '/match/live') {
     fetchAllLiveData(); // 初次加载数据
     intervalId = setInterval(updateTimeAndFetch, 3000); // 每3秒更新
   }
@@ -476,14 +500,21 @@ onUnmounted(() => {
   margin-top: 20px;
   cursor: pointer;
 }
+a{
+    text-decoration: none; //去下划线
+    color: #000;
+}
 .text {
   padding: 10px 20px;
   border-radius: 5px;
 }
 .text.active {
   background-color: #ff3b30; // 选中时背景颜色为红色
-  color: white; // 选中时字体颜色为白色
   font-weight: 600;
+  color: white !important;  // 选中时字体颜色为白色
+}
+.text.active a {
+    color: white !important; /* 选中时字体颜色为白色 */
 }
 .table {
   margin-top: 20px;

@@ -1,18 +1,15 @@
 <template>
     <div>
         <div class="table">
-            <MatchTable v-if="tableData" :data="tableData" :activeIndex="activeIndex" :flag="flag"/>
+            <MatchTable v-if="tableData" :data="tableData" />
         </div>
     </div>
 </template>
 <script setup>
 import { favorEarly } from '../../../api/match';
 import MatchTable from './MatchTable.vue';
-const props = defineProps({
-  activeIndex: Int32Array
-});
+
 const tableData = ref([])
-const flag = 'course'
 let intervalId = null;
 
 // const fetchTableData = () => {
@@ -21,8 +18,14 @@ let intervalId = null;
 //         favorUpRealy({time: Date.now()})
 //     });
 // };
+const body = {
+  data: "",
+  lids: [],
+  time: Date.now(),
+  uid: localStorage.uid
+};
 const fetchTableData = () => {
-    favorEarly().then((res) => {
+    favorEarly(body).then((res) => {
         tableData.value = res
     })
 };

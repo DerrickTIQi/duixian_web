@@ -1,9 +1,11 @@
 <template>
-    <div class="matchDetail">
-        <div class="back" @click="goBack">
-            <img src="@/assets/back.png" style="width: 20px; height: 20px;">
-            <div class="back-text">返回</div>
-        </div>
+    <div class="matchDetail" v-loading.fullscreen.lock="fullscreenLoading">
+        <a :href="goBack">
+            <div class="back" >
+                <img src="@/assets/back.png" style="width: 20px; height: 20px;">
+                <div class="back-text">返回</div>
+            </div>
+        </a>
         <div class="title">
             <div class="group">{{matchData.NCN?.LEAGUE}}</div>
             <div class="time">{{matchData.NCN?.DATE}}</div>
@@ -56,28 +58,32 @@ import { useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
+// const matchData = ref({})
+const fullscreenLoading = ref(true); // 控制加载遮罩
 const matchData = ref({})
 let fetchTimer = null;
 let visibilityTimer = null;
 const isVisible = ref(true); // 控制呼吸效果
 const body = {
-  mid: route.params.id
+  mid: route.params.id,
+  uid: parseInt(localStorage.uid)
 }
 
-//获取当前路径传递的activeIndex
-const activeIndex = route.params.index
-
-
-const goBack = () => {
-    //返回上一页
-    router.push({path: '/Match',query: { activeIndex }})
-}
+const goBack = computed(() => {
+    if (route.path.split('/')[2] === 'live') {
+        return '#/match/live'; 
+    } else if(route.path.split('/')[2] === 'followlive') {
+        return '#/match/followlive'; 
+    }
+})
 
 const fetchData = () => {
-  detailLive(body).then((res) => {
-    // 深拷贝新数据，确保响应式更新
-    matchData.value = res
-  });
+    
+    detailLive(body).then((res) => {
+        // 深拷贝新数据，确保响应式更新
+        matchData.value = res
+        fullscreenLoading.value = false; // 隐藏加载遮罩
+    });
 }
 
 // 在页面挂载时初始化并开始实时更新
@@ -114,6 +120,9 @@ onUnmounted(() => {
 //     height: 100vh; /* 占满整个页面 */
 //     text-align: center;
 // }
+a{
+    color: #000;
+}
 .breathing {
   transition: opacity 1s ease; /* 设置过渡效果 */
 }

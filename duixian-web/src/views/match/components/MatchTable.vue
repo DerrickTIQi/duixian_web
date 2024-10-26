@@ -3,7 +3,7 @@
     <el-table
       :data="tableData"
       style="width: 100%"
-      @row-click="handleRowClick"
+      
     >
       <el-table-column
         prop="match"
@@ -11,57 +11,74 @@
         align="center"
         width="200px"
       >
-        <template #default="{ row }">
-          {{ row.NCN?.LEAGUE }}
+        <template #default="{ row}">
+          <a :href="getRowLink(row)" class="row-link">
+            <span   class="match-text" :title="row.NCN?.LEAGUE">{{ row.NCN?.LEAGUE }}</span>
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="time" label="时间" align="center" width="100px">
         <template #default="{ row }">
-          {{ row.odds_datetime?.date_cut }}
+          <a :href="getRowLink(row)" class="row-link">
+            {{ row.odds_datetime?.date_cut }}
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="status" label="状态" align="center" width="75px">
         <template #default="{ row }">
-          <span v-if="activeIndex === 2 && row.NCN?.TIMER >= 90">完场</span>
-          <span v-else-if="row.NCN?.TIMER == 0">未开始</span>
-          <div v-else class="status-time" style="color: #ff3b30;">
-            <img :src="geticon(row.NCN?.TIMER)" style="margin-right: 8px;"/>
-            <span :class="['breathing', { fade: !isVisible }]"> {{ row.NCN?.TIMER }}'</span>
-          </div>
+          <a :href="getRowLink(row)" class="row-link">
+            <span v-if="(route.path.split('/')[2] === 'record') && row.NCN?.TIMER >= 90">完场</span>
+            <span v-else-if="row.NCN?.TIMER == 0">未开始</span>
+            <div v-else class="status-time" style="color: #ff3b30;">
+              <img :src="geticon(row.NCN?.TIMER)" style="margin-right: 8px;"/>
+              {{ row.NCN?.TIMER }}
+              <span :class="['breathing', { fade: !isVisible }]"> '</span>
+            </div>
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="home" label="主场球队" align="right">
         <template #default="{ row }">
-          <span v-if="parseInt(row.NCN?.RED?.split(':')[0]) > 0" class="red">{{ parseInt(row.NCN?.RED?.split(":")[0])}}</span>
-          <span v-if="parseInt(row.NCN?.YELLOW?.split(':')[0]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[0])}}</span>
-          <span style="color: #8e8e93; font-size: 12px; margin-right: 5px">{{ row.hwin}}</span>
-          <span> {{ row.NCN?.TEAM_H }}</span>
+          <a :href="getRowLink(row)" class="row-link">
+            <span v-if="parseInt(row.NCN?.RED?.split(':')[0]) > 0" class="red">{{ parseInt(row.NCN?.RED?.split(":")[0])}}</span>
+            <span v-if="parseInt(row.NCN?.YELLOW?.split(':')[0]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[0])}}</span>
+            <span style="color: #8e8e93; font-size: 12px; margin-right: 5px">{{ row.hwin}}</span>
+            <span> {{ row.NCN?.TEAM_H }}</span>
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="point" label="比分" align="center" width="60px">
         <template #default="{ row }">
-          <span style="color: #ff3b30; font-weight: 600">
-            {{ row.NCN?.SCORE }}
-          </span>
+          <a :href="getRowLink(row)" class="row-link">
+            <span style="color: #ff3b30; font-weight: 600">
+              {{ row.NCN?.SCORE }}
+            </span>
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="guest" label="客场球队" align="left">
         <template #default="{ row }">
-          <span> {{ row.NCN?.TEAM_C }}</span>
-          <span style="color: #8e8e93; font-size: 12px; margin: 0 5px">{{ row.gwin}}</span>
-          <span  v-if="parseInt(row.NCN?.YELLOW?.split(':')[1]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[1]) }}</span>
-          <span v-if="parseInt(row.NCN?.RED?.split(':')[1]) > 0" class="red">{{parseInt(row.NCN?.RED?.split(":")[1])}}</span>
+          <a :href="getRowLink(row)" class="row-link">
+            <span> {{ row.NCN?.TEAM_C }}</span>
+            <span style="color: #8e8e93; font-size: 12px; margin: 0 5px">{{ row.gwin}}</span>
+            <span  v-if="parseInt(row.NCN?.YELLOW?.split(':')[1]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[1]) }}</span>
+            <span v-if="parseInt(row.NCN?.RED?.split(':')[1]) > 0" class="red">{{parseInt(row.NCN?.RED?.split(":")[1])}}</span>
+          </a>
         </template>
       </el-table-column>
       <el-table-column v-if="showHalfColumn" prop="half" label="半场" align="center" width="70px">
         <template #default="{ row }">
-          {{ row.NCN?.["H:SCORE"] }}
+          <a :href="getRowLink(row)" class="row-link">
+            {{ row.NCN?.["H:SCORE"] }}
+          </a>
         </template>
       </el-table-column>
       <el-table-column v-if="showHalfColumn" prop="corner" label="角球" align="center" width="70px">
         <template #default="{ row }">
-          <img src="@/assets/detail/jiaoqiu.png"/>
-          {{ row.NCN?.["CN:SCORE"] }}
+          <a :href="getRowLink(row)" class="row-link">
+            <img src="@/assets/detail/jiaoqiu.png"/>
+            {{ row.NCN?.["CN:SCORE"] }}
+          </a>
         </template>
       </el-table-column>
       <el-table-column
@@ -71,15 +88,17 @@
         width="140px"
       >
         <template #default="{row}" >
-          <div style="font-size: 12px;">
-            <span class="trtext">{{ row.odds_early?.AH?.hrfsp }}</span>
-            <span class="trtext trtext1">{{ row.odds_early?.AH?.hrf }}</span>
-            <span class="trtext">{{ row.odds_early?.AH?.grfsp }}</span>
-            <br>
-            <span class="trtext">{{ row.odds_early?.OU?.hdxsp }}</span>
-            <span class="trtext trtext2">{{ row.odds_early?.OU?.hdx }}</span>
-            <span class="trtext">{{ row.odds_early?.OU?.hdxsp }}</span>
-          </div>
+          <a :href="getRowLink(row)" class="row-link">
+            <div style="font-size: 12px;">
+              <span class="trtext">{{ row.odds_early?.AH?.hrfsp }}</span>
+              <span class="trtext trtext1">{{ row.odds_early?.AH?.hrf }}</span>
+              <span class="trtext">{{ row.odds_early?.AH?.grfsp }}</span>
+              <br>
+              <span class="trtext">{{ row.odds_early?.OU?.hdxsp }}</span>
+              <span class="trtext trtext2">{{ row.odds_early?.OU?.hdx }}</span>
+              <span class="trtext">{{ row.odds_early?.OU?.hdxsp }}</span>
+            </div>
+          </a>
         </template>
       </el-table-column>
       <el-table-column label="功能" align="center" width="85px">
@@ -116,10 +135,15 @@ import { favorAdd, favorDelete, favorLive, favorUpLive } from '../../../api/matc
 import { onMounted, onUnmounted } from 'vue';
 const props = defineProps({
   data: Object,
-  flag: String,
-  activeIndex: Int32Array
 });
-const emit = defineEmits()
+const tableData = computed(() => {
+  return props.data || []; // 如果 props.data 存在，返回它，否则返回一个空数组
+})
+const getRowLink = (row) =>{
+    return `${location.href}/${row.KEY}`
+
+}
+const emit = defineEmits(['update-data'])
 // 计算用户角色
 const userStore = useUserStore();
 const userRole = computed(() => userStore.roles);
@@ -127,7 +151,7 @@ const userRole = computed(() => userStore.roles);
 const showHalfColumn = computed(() => {
   return tableData.value.length > 0 && tableData.value[0]?.NCN?.["H:SCORE"] !== undefined && tableData.value[0]?.NCN?.["CN:SCORE"] !== undefined;
 })
-const router = useRouter();
+const route = useRoute();
 const toggleStart = (row, event) => {
   event.stopPropagation(); // 阻止事件冒泡
   if(row.FA === 0){
@@ -161,6 +185,8 @@ const geticon = (time) => {
     return icon90a
   }
 }
+
+
 const toggleTop = (row, event) => {
   event.stopPropagation(); // 阻止事件冒泡
   // 如果是第一次点击置顶，则保存该行的原始索引
@@ -189,22 +215,6 @@ const toggleTop = (row, event) => {
   }
 };
 
-const tableData = computed(() => {
-  return props.data || []; // 如果 props.data 存在，返回它，否则返回一个空数组
-})
-
-
-const handleRowClick = (row) => {
-  setTimeout(() => {
-    if(props.flag === 'course'){
-      router.push(`/MatchCourse/${row.KEY}/${props.activeIndex}`);
-    }else if(props.flag === 'record'){
-      router.push(`/MatchRecord/${row.KEY}/${props.activeIndex}`);
-    }else{
-      router.push(`/Match/${row.KEY}/${props.activeIndex}`);
-    }
-  }, 0);
-}
 
 const isVisible = ref(true);
 let intervalId;
@@ -216,12 +226,39 @@ onMounted(() => {
   }, 1000); // 每2秒切换一次可见性
 });
 
+
+
 onUnmounted(() => {
   // 清除定时器
   clearInterval(intervalId);
 });
 </script>
 <style lang='scss' scoped>
+.match-text{
+  // // word-wrap: break-word;
+  // width: 100%;
+  // display: block;
+  // overflow: hidden;
+  // // 
+  // white-space:normal;
+  // text-overflow: ellipsis;
+  display: block; /* 使span充当块级元素 */
+  width: 150px;
+  overflow: hidden; /* 隐藏溢出的内容 */
+  white-space: nowrap; /* 不换行 */
+  text-overflow: ellipsis; /* 超出部分用省略号表示 */
+  text-align: left;
+  margin-left: 50px;
+}
+.row-link {
+  display: block; /* 让链接填满单元格 */
+  width: 100%; /* 确保宽度为100% */
+  text-decoration: none; /* 去除下划线 */
+  color: inherit; /* 继承颜色 */
+}
+// .row-link:hover {
+//   background-color: rgba(255, 59, 48, 0.1); /* 悬停时的背景色 */
+// }
 .match_table{
   z-index: 1000 ;
 }

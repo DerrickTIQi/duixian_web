@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="table">
-            <MatchTable v-if="tableData" :data="tableData" :activeIndex="activeIndex" @update-data="fetchTableData"/>
+            <MatchTable v-if="tableData" :data="tableData"  @update-data="fetchTableData"/>
         </div>
     </div>
 </template>
@@ -9,9 +9,7 @@
 import { favorLive, favorUpLive } from '../../../api/match';
 import MatchTable from './MatchTable.vue';
 const tableData = ref([])
-const props = defineProps({
-  activeIndex: Int32Array
-});
+
 const body = {
   data: "",
   lids: [],
@@ -23,7 +21,7 @@ const fetchAllLiveData = () => {
   favorLive(body).then(res => {
     tableData.value = res.list;
       tableData.value.map((match) => {
-      detailLive({ mid: match.KEY }).then((res) => {
+      detailLive({ mid: match.KEY, uid: parseInt(localStorage.uid) }).then((res) => {
         match.odds_display_early = res.odds_display_early;
       });
     });

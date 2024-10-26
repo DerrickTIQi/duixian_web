@@ -14,7 +14,7 @@
                     <div>{{username}}</div>
                     <img :src="isDropdownVisible ? downSelected : downDefault" style="margin-left: 5px;"/>
                 </div>
-                <button v-else class="header-button" @click="handleLogin">登录/注册</button>
+                <a v-else href="#/login"><button class="header-button" >登录/注册</button></a>
 
                 <ul v-if="isDropdownVisible" class="dropdown-menu" @click.stop>
                     <li @click="handlePermissionClick" class="dropdown-item">权限信息</li>
@@ -143,6 +143,7 @@ onBeforeUnmount(() => {
     color: #fff;
     margin-left: auto;
     margin-top: 16px;
+    cursor: pointer;
 }
 .header-right{
     display: flex;

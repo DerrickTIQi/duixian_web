@@ -1,9 +1,11 @@
 <template>
-    <div class="matchDetail">
-        <div class="back" @click="goBack">
-            <img src="@/assets/back.png" style="width: 20px; height: 20px;">
-            <div class="back-text">返回</div>
-        </div>
+    <div class="matchDetail" v-loading.fullscreen.lock="fullscreenLoading">
+        <a :href="goBack">
+            <div class="back" >
+                <img src="@/assets/back.png" style="width: 20px; height: 20px;">
+                <div class="back-text">返回</div>
+            </div>
+        </a>
         <div class="title">
             <div class="group">{{ matchData.NCN?.LEAGUE }}</div>
             <div class="time">{{ matchData.NCN?.DATE }}</div>
@@ -41,10 +43,10 @@
                 <span>{{ item }}</span>
             </div>
         </div>
-        <div v-if="(route.path.split('/')[1] === 'Screen' && actiIndex === 0) || (route.path.split('/')[1] === 'MatchRecord' && actiIndex === 0)">
+        <div v-if="(route.path.split('/')[1] === 'screen' && actiIndex === 0) || (route.path.split('/')[2] === 'record' && actiIndex === 0)">
             <HomeDetail v-if="matchData.OV_INFO" :data="matchData" />
         </div>
-        <div class="table" v-if="(route.path.split('/')[1] === 'MatchCourse' && actiIndex === 0) || (route.path.split('/')[1] === 'Screen' && actiIndex === 1) || (route.path.split('/')[1] === 'MatchRecord' && actiIndex === 1)">
+        <div class="table" v-if="(route.path.split('/')[2] === 'early') || (route.path.split('/')[1] === 'screen' && actiIndex === 1) || (route.path.split('/')[2] === 'record' && actiIndex === 1) || (route.path.split('/')[2] === 'followearly')">
             <div class="table_title">
                 <div class="navi1">
                     <div 
@@ -75,45 +77,61 @@ const naviItems = ['主队', '客队'];
 const actiIndex = ref(0);
 const actiIndexs = ref(0);
 const route = useRoute();
-const router = useRouter();
 const matchData = ref({});
-if(route.path.split('/')[1] === 'MatchCourse'){
+const fullscreenLoading = ref(true); // 控制加载遮罩
+if(route.path.split('/')[2] === 'early' || route.path.split('/')[2] === 'followearly'){
      naviItem.value = ['历史分析'];
-}else if((route.path.split('/')[1] === 'Screen' && route.params.running === '1')){
+}else if((route.path.split('/')[1] === 'screen' && route.params.running === '1')){
     naviItem.value = ['本场'];
 }else{
     naviItem.value = ['本场', '历史分析']
 }
 
-//获取当前路径传递的activeIndex
-const activeIndex = route.params.index
 
-
-
-const goBack = () => {
-    //返回上一页
-    if(route.path.split('/')[1] === 'Screen'){
-        router.push({path: '/Screen',query: { activeIndex }})
-    }else{
-        router.push({path: '/Match',query: { activeIndex }})
+const goBack = computed(() => {
+    if (route.path.split('/')[2] === 'early') {
+        return '#/match/early'; 
+    } else if (route.path.split('/')[2] === 'record') {
+        return '#/match/record'; 
+    } else if (route.path.split('/')[2] === 'followearly') {
+        return '#/match/followearly'; 
+    } else if (route.path.split('/')[2] === 'jinxuan') {
+        return '#/screen/jinxuan'; 
+    } else if (route.path.split('/')[2] === 'my') {
+        return '#/screen/my'; 
     }
-}
+})
+
 // 请求数据的函数
 const fetchData = () => {
-  if (route.path.split('/')[1] === 'MatchCourse') {
-    detailEarly({ mid: route.params.id }).then((res) => {
+    let loadingTimeout = null;
+  if (route.path.split('/')[2] === 'early' || route.path.split('/')[2] === 'followearly') {
+    detailEarly({ mid: route.params.id, uid: parseInt(localStorage.uid) }).then((res) => {
       matchData.value = res; // 确保 matchData 是响应式的
+      loadingTimeout = setTimeout(() => {
+        fullscreenLoading.value = false; // 隐藏加载遮罩
+      }, 1000);
     });
-  } else if (route.path.split('/')[1] === 'MatchRecord' || (route.path.split('/')[1] === 'Screen' && route.params.running === '0')) {
-    detailRecord({ mid: route.params.id }).then((res) => {
+  } else if (route.path.split('/')[2] === 'record' || (route.path.split('/')[1] === 'screen' && route.params.running === '0')) {
+    detailRecord({ mid: route.params.id, uid: parseInt(localStorage.uid) }).then((res) => {
       matchData.value = res;
+      loadingTimeout = setTimeout(() => {
+        fullscreenLoading.value = false; // 隐藏加载遮罩
+      }, 1000);
     });
-  } else if (route.path.split('/')[1] === 'Screen' && route.params.running === '1') {
+  } else if (route.path.split('/')[1] === 'screen' && route.params.running === '1') {
+    detailLive({ mid: route.params.id, uid: parseInt(localStorage.uid) }).then((res) => {
+        matchData.value = res;
+        loadingTimeout = setTimeout(() => {
+        fullscreenLoading.value = false; // 隐藏加载遮罩
+      }, 1000);
+    });
+    
     // 启动定时更新
     liveUpdateInterval = setInterval(() => {
-      detailLive({ mid: route.params.id }).then((res) => {
+        detailLive({ mid: route.params.id, uid: parseInt(localStorage.uid) }).then((res) => {
         matchData.value = res;
-      });
+    });
     }, 3000); // 每3秒更新一次
   }
 };
@@ -146,6 +164,9 @@ onUnmounted(() => {
 </script>
 
 <style lang='scss' scoped>
+a{
+    color: #000;
+}
 .matchDetail{
     width: 1200px;
     margin: 0 auto;

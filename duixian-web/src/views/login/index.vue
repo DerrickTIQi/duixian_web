@@ -2,7 +2,7 @@
     <div class="page">
         <div class="mask"></div>
         <div class="header">
-            <img src="@/assets/logo.png" />
+            <a href="#/"><img src="@/assets/logo.png"  style="cursor: pointer;"/></a>
             <span class="kefu">客服QQ: <span class="qq">763643616</span></span>
         </div>
         <div class="container">
@@ -19,10 +19,16 @@ import LoginForm from './components/LoginForm.vue';
 import RegisterForm from './components/RegisterForm.vue';
 
 const route = useRoute();
+const router = useRouter()
 
 const isLoginPage = computed(() => {
+    console.log(route.path);
     return route.path === '/login'; // 使用route获取当前路径，根据当前路由路径判断
+    
+      
 })
+
+
 </script>
 <style lang='scss' scoped>
 .page{

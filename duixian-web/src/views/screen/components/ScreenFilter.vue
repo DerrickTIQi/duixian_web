@@ -126,15 +126,18 @@ const toggleStart = () => {
 };
 let timeoutId;
 const fetchWithTimeout = async () => {
-    try {
-        // 调用数据获取函数
-        await fetchLeagues(); // 等待数据获取完成
+    if (timeoutId) {
+        clearTimeout(timeoutId);  // 清除先前的定时器
+    }
 
-        // 在请求完成后，递归调用 setTimeout，再次启动下一个请求
-        timeoutId =  setTimeout(fetchWithTimeout, 3000); // 10 秒后重新执行
+    try {
+        await fetchLeagues();  // 等待数据获取完成
+
+        // 在请求完成后，设置一个新的定时器
+        timeoutId = setTimeout(fetchWithTimeout, 3000);  // 3 秒后重新执行
     } catch (error) {
-        // 即便出错，仍然在 10 秒后重新尝试请求
-        timeoutId =  setTimeout(fetchWithTimeout, 3000);
+        // 即便出错，也设置定时器
+        timeoutId = setTimeout(fetchWithTimeout, 3000);
     }
 };
 // 在组件挂载时调用，并每3秒刷新一次
@@ -150,7 +153,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  if (leaguesTimer) clearInterval(leaguesTimer);  // 清除定时器
+  if (timeoutId) clearInterval(timeoutId);  // 清除定时器
 });
 
 function getActivePlan(res){
@@ -241,12 +244,7 @@ const resetFilters = () => {
         setFilter(defaultPlan).then(() => {
             clearSelections()
             EventBus.chartUpdate = true
-            // console.log('chartUpdate:', EventBus.chartUpdate);
             
-            // ftInplay({ code: 'default', uid: parseInt(localStorage.uid) });
-            // myPlans()
-            // emit('update:selectedIndex', 1);
-            ElMessage.success('已重置方案，筛选中');
         });
     }
 };
@@ -273,10 +271,6 @@ const completeFilters = () => {
             // clearSelections()
             EventBus.chartUpdate = true
             
-            // ftInplay({ code: currentPlan.code, uid: parseInt(localStorage.uid) });
-            // myPlans()
-            // emit('update:selectedIndex', 1);
-            ElMessage.success('筛选中');
         });
     }
 };

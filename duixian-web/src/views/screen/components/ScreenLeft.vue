@@ -8,14 +8,15 @@
                 :key="item"
                 @mouseover="hoverIndex = index"
                 @mouseleave="hoverIndex = null"
-                @click="selectIndex(index)"
-                :class="{'active': selectedIndex === index}"
+                :class="{'active': route.path === getPath(index)}"
                 >
-                    <span>{{ item }}</span>
-                    <!-- 筛选器和精选方案项中显示的span -->
-                    <span v-if="index === 0 && count" class="title-span">{{ count }}</span> <!-- 筛选器的内容 -->
-                    <span v-if="index === 1" class="title-span">{{ myPlansData.length }}</span> <!-- 精选方案的内容 -->
-                    <div class="underline" v-if="selectedIndex === index || hoverIndex === index"></div>
+                    <router-link :to="getPath(index)">
+                        <span>{{ item }}</span>
+                        <!-- 筛选器和精选方案项中显示的span -->
+                        <span v-if="index === 0 && count" class="title-span">{{ count }}</span> <!-- 筛选器的内容 -->
+                        <span v-if="index === 1" class="title-span">{{ myPlansData.length }}</span> <!-- 精选方案的内容 -->
+                        <div class="underline" v-if="route.path === getPath(index) || hoverIndex === index"></div>
+                    </router-link>
                 </div>
             </div>
             <div class="fenge">
@@ -23,9 +24,9 @@
             </div>
         </div>
         <div class="content">
-            <ScreenFilter v-if="selectedIndex === 0" :selectedIndex="selectedIndex" @update:selectedIndex="selectedIndex = $event" @updateStart="Start"/>
-            <ScreenJinxuan v-if="selectedIndex === 1 && screenData " :data="screenData" @updatePlans="updatePlan" :selectedIndex="selectedIndex"/>
-            <ScreenMy v-if="selectedIndex === 2 " :data="mainData" :selectedIndex="selectedIndex"  @update:selectedIndex="selectedIndex = $event" />
+            <ScreenFilter v-if="route.path === '/screen/filter'"  @updateStart="Start"/>
+            <ScreenJinxuan v-if="(route.path === '/screen/jinxuan') && screenData " :data="screenData" @updatePlans="updatePlan" />
+            <ScreenMy v-if="route.path === '/screen/my' " :data="mainData"  />
         </div>
 
     </div>
@@ -34,51 +35,41 @@
 import ScreenJinxuan from './ScreenJinxuan.vue';
 import ScreenFilter from './ScreenFilter.vue';
 import ScreenMy from './ScreenMy.vue';
-import { myPlans, Plans } from '../../../api/screen';
 const props = defineProps({
     count: Int32Array,
 })
 const route = useRoute();
 const emit = defineEmits(['startStatus'])
 const titleData =["筛选器", "精选方案", "我的方案"]
+
+const getPath = (index) => {
+  const paths = ['/screen/filter', '/screen/jinxuan', '/screen/my'];
+  return paths[index] || '/';
+};
+const pathname = ref(location.hash)
 // 计算用户角色
 const userStore = useUserStore();
 const userRole = computed(() => userStore.roles);
 const hoverIndex = ref(null) //鼠标悬停时索引
-const selectedIndex = ref(route.query.activeIndex ? parseInt(route.query.activeIndex) : 1) //点击时索引
+// const selectedIndex = ref(route.query.activeIndex ? parseInt(route.query.activeIndex) : 1) //点击时索引
 const screenData = ref([])  //精选方案数据
 const mainData = ref([])  //我的方案数据
-// if(userRole.value !== 'tourist'){
-//     Plans().then((res) => {
-//         screenData.value = res;
-//     });
-// }
 const startStatus = ref() //收藏状态
 const Start = (item) => {
     startStatus.value = item
     emit('startStatus',startStatus)
-    
 }
 
 const myPlansData = ref([])
 const updatePlan = (data) => {
     myPlansData.value = data
 }
-const selectIndex = (index) => {
-    selectedIndex.value = index
-     // 根据点击的索引调用不同的接口
-     if (index === 1 && userRole.value !== 'tourist') {
-        // Plans().then((res) => {
-        //     screenData.value = res;
-        // });
-    } else if (index === 2 && userRole.value !== 'tourist') {
-        // myPlans().then((res) => {
-        //     mainData.value = res;
-        // });
-    }
-}
 </script>
 <style lang='scss' scoped>
+a{
+    text-decoration: none; //去下划线
+    color: #000;
+}
 .title-span{
     background-color: #ff3b30;
     font-weight: normal !important;
@@ -88,7 +79,7 @@ const selectIndex = (index) => {
     margin-left: 5px;
 }
 .menu{
-    background-color: rgba(242, 242, 247, 0.5);
+    background-color: rgba(242, 242, 247, 1);
     border-radius: 10px 10px 0 0;
     width: 380px;
     height: 46px;

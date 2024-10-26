@@ -28,10 +28,11 @@
             :class="{active: activeIndex === index}"
             @click="handleItemClick(item)">
                 <span class="text-span">{{ item }}</span>
+                <span style="font-size: 12px;">{{ getWeekday(item) }}</span>
             </div>
         </div>
         <div class="table">
-            <MatchTable v-if="tableData" :data="tableData" :activeIndex="nowActive" :flag="flag"/>
+            <MatchTable v-if="tableData" :data="tableData" />
             <div v-if="loading" class="loading-indicator">Loading...</div>
             <div ref="loadMoreTrigger" class="load-more-trigger"></div> <!-- 监听加载更多的触发点 -->
         </div>
@@ -43,15 +44,12 @@ import downDefault from '@/assets/table/down-default.png'
 import dateSelected from '@/assets/table/date-selected.png'
 import dateDefault from '@/assets/table/date-default.png'
 import MatchTable from './MatchTable.vue';
-const props = defineProps({
-  activeIndex: Int32Array
-});
-const nowActive = props.activeIndex
+
+
 const naviItem = ref([])
 const visibleNaviItems = computed(() => naviItem.value.slice(0, 7)); // 只显示7个导航项
 const activeIndex = ref(0)
 const tableData = ref([])
-const flag = 'record'
 const loading = ref(false); // 加载状态
 const hasMorePages = ref(true); // 是否有更多页面
 const currentPage = ref(1); // 当前页
@@ -62,6 +60,32 @@ const loadMoreTrigger = ref(null);
 const selectedDate = ref(null);
 const isDatePickerVisible = ref(false);
 const isDateVisible = ref(false); // 控制图片的颜色
+
+
+// 获取当前日期的格式化字符串
+const getCurrentFormattedDate = () => {
+    const today = new Date();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${month}-${day}`; // 返回格式为 "MM-DD"
+}
+//获取当前是星期几
+const getWeekday = (dateString) => {
+    const [month, day] = dateString.split('-'); // 分割日期字符串
+    const date = new Date(new Date().getFullYear(), month - 1, day); // 创建 Date 对象
+    const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']; // 星期几名称数组
+    
+
+    // 获取当前日期的格式化字符串
+    const currentDateString = getCurrentFormattedDate();
+
+    // 如果当前日期与传入的日期相同，返回“今天”
+    if (dateString === currentDateString) { 
+        return '今天';
+    }
+
+    return weekdays[date.getDay()]; // 获取星期几
+}
 
 // 打开 DatePicker
 const openDatePicker = () => {
@@ -209,6 +233,7 @@ const observeLoadMoreTrigger = () => {
     justify-content: center;
     align-items: center;
     text-align: center;
+    flex-direction: column;
     font-size: 14px;
     z-index: 1000;
 }

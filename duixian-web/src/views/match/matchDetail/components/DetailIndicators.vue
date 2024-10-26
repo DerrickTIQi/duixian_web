@@ -72,7 +72,7 @@ const progressMain = computed(() => [
 </script>
 <style lang='scss' scoped>
 .content{
-    background-color: rgba(242, 242, 247, 0.5);
+    background-color: rgba(242, 242, 247, 1);
     border-radius: 0px 10px 10px 10px;
     width: 800px;
     height: 332px;

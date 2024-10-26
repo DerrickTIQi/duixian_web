@@ -1,7 +1,9 @@
 <template>
-    <el-menu-item class="menu-item" :class="{'menu-item--active': active,}" @click="$emit('select', menu.path)">
-      <span>{{ menu.label }}</span>
-      <div class="underline" />
+    <el-menu-item class="menu-item" :class="{'menu-item--active': active,}" >
+      <a :href="menu.path" >
+        <span>{{ menu.label }}</span>
+        <div class="underline" />
+      </a>
     </el-menu-item>
 </template>
 <script setup>
@@ -16,7 +18,9 @@ const props = defineProps({
   padding: 0 16px;
   background-color: transparent;
 }
-
+a{
+    text-decoration: none; //去下划线
+}
 .menu-item .underline {
   position: absolute;
   top: 0;

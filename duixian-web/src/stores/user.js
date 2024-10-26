@@ -89,7 +89,7 @@ export const useUserStore = defineStore('user', () => {
   const registerSuccess = async options => {
     ElMessage.success('注册成功');
     router.replace({
-      path: '/login'
+      path: '#/login'
     })
   }
 

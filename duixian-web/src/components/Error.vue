@@ -60,9 +60,9 @@ const handleClick = (word) => {
 .error{
     width: 400px;
     height: 248px;
-    position: absolute;
-    top: 50%;
-    left: 35%;
+    position: fixed;
+    top: 50vh;
+    left: 65vh;
     border-radius: 4px;
     box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
     background-color: #fff;

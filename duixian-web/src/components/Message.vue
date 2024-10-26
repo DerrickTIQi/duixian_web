@@ -1,12 +1,38 @@
 <template>
   <div  class="message">
     <!-- 消息通知组件 -->
-    <app-notifi
+    <!-- <app-notifi
       :show="showNotification"
       :match="nowHistory"
       :title="currentPlanTitle"
       @close="closeNotification"
-    />
+    /> -->
+    <!-- 消息通知 -->
+    <div v-if="showNotification" class="notifi">
+      <div class="img-bg">
+        <img src="@/assets/tanchuang-bg.png" />
+        <div class="title">
+          <div class="left">
+            <div class="left_one">{{ currentPlanTitle }}</div>
+            <div class="left_two">
+              当前方案有【<span style="color: #e92937;">1</span>个新比赛】
+            </div>
+          </div>
+          <div class="right" @click="closeNotification">
+            <img src="@/assets/table/icon-close-gray-default.png" />
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="num">1</div>
+        <div class="match">
+          <div class="leagues">{{ nowHistory.NCN?.LEAGUE }}</div> 【
+          <div class="hteam">{{ nowHistory.NCN?.TEAM_H }}</div>
+          <img src="@/assets/img-vs-s.png" style="margin: 0 3px;" />
+          <div class="ateam">{{ nowHistory.NCN?.TEAM_C }}</div> 】
+        </div>
+      </div>
+    </div>
 
     <!-- 全局音频 -->
     <audio ref="audioElement" preload="auto">
@@ -112,9 +138,69 @@ onMounted(() => {
   
 <style scoped>
 .message{
+  position: fixed;
+  top: 70vh;
+  left: 65vh;
+  z-index: 1000000
+}
+.notifi {
+  width: 600px;
+  height: 180px;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+}
+.img-bg {
+  position: relative;
+}
+.title {
   position: absolute;
-  top: 70%;
-  left: 35%;
+  top: 24px;
+  left: 188px;
+}
+.left {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.left_one {
+  font-size: 18px;
+  font-weight: bold;
+}
+.left_two {
+  margin-top: 8px;
+  width: 200px;
+  height: 24px;
+  border-radius: 16px;
+  background-image: linear-gradient(to right, #d0eeff, #fcd4d0);
+  font-size: 14px;
+  padding-top: 2px;
+}
+.right {
+  position: absolute;
+  top: -21px;
+  right: -205px;
+  cursor: pointer;
+}
+.content {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-top: 16px;
+}
+.num {
+  position: absolute;
+  left: 40px;
+}
+.match {
+  display: flex;
+  justify-content: center;
+}
+.hteam {
+  color: #e92937;
+}
+.ateam {
+  color: #0071ff;
 }
 </style>
   

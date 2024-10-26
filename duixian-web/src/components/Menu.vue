@@ -5,31 +5,33 @@
         v-for="item in menus"
         :key="item.value"
         :menu="item"
-        :active="item.path == activeMenu"
-        @select="selectMenuItem"
+        :active="item.path === activeMenu"
         />
       </el-menu>
     </div>
 </template>
 <script setup>
-const route = useRoute()
-const router = useRouter()
-const activeMenu = computed(() => {
-  if (route.meta.rootPath) {
-    return route.meta.rootPath
-  } else {
-    return route.path
-  }
-})
-const selectMenuItem = path => router.push(path)
+// const activeMenu = computed(() => {
+//   if (location.hash) {
+//     return location.hash
+//   }
+// })
+const activeMenu = ref(location.hash)
+// const selectMenuItem = path =>{}
 const menus = [
-  { label: '首页', path: '/Home' },
-  { label: '赛事', path: '/Match'},
-  { label: '筛选推单', path: '/Screen', },
-  { label: '会员价格', path: '/Product', },
-  { label: 'App下载', path: '/Download', },
+  { label: '首页', path: '#/' },
+  { label: '赛事', path: '#/match/live'},
+  { label: '筛选推单', path: '#/screen/jinxuan', },
+  { label: '会员价格', path: '#/product', },
+  { label: 'App下载', path: '#/app', },
 ]
 
+// 监听浏览器hash变化
+onMounted(() => {
+  window.addEventListener("hashchange", () => {
+    activeMenu.value = location.hash;
+  });
+});
 </script>
 <style lang='scss' scoped>
 .menu {

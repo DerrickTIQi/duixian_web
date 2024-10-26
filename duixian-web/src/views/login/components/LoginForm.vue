@@ -2,7 +2,7 @@
     <div class="login-form">
         <div class="form-main">
             <div class="title">登录账号</div>
-            <img src="@/assets/login/login-logo.png" class="login-logo"/>
+            <img src="@/assets/login/login-logo.png" class="login-logo" />
             <form class="form" @keyup.enter="handleLogin">
                 <div class="form-item">
                     <span class="form-item-text" >账号</span>
@@ -21,7 +21,7 @@
             </form>
             <div v-if="loading" class="button-login button-login--disabled">登录中...</div>
             <div v-else class="button-login" @click="handleLogin">登录</div>
-            <div class="tip">还没有账号？<a href="/#/register">去注册</a></div>
+            <div class="tip">还没有账号？<a href="#/register">去注册</a></div>
         </div>
     </div>
 </template>
@@ -45,6 +45,7 @@ const handleLogin = () => {
 
   request()
 }
+
 </script>
 <style lang='scss' scoped>
 .login-form{

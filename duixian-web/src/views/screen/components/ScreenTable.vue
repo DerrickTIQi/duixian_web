@@ -13,54 +13,71 @@
                     说明：以下赛事显示的比赛时间和比分均为推荐时的时间和比分，并非实时比赛进行的时间和比分，查看实时进行时间和比分请点击比赛进入赛事详情页面
                 </div>
             </template>
-            <el-table  :data="tableData" stripe class="screen_table" @row-click="handleRowClick">
+            <el-table  :data="tableData" stripe class="screen_table" >
                 <el-table-column prop="match" label="所属赛事" align="center" width="170px">
                     <template #default="{ row }">
-                        {{ row.NCN?.LEAGUE }}
+                        <a :href="getRowLink(row)" class="row-link">
+                            {{ row.NCN?.LEAGUE }}
+                        </a>
                     </template>
                 </el-table-column>
                 <el-table-column prop="time" label="时间" align="center" width="170px">
                     <template #default="{ row }">
-                        {{ row.NCN?.DATE }}
+                        <a :href="getRowLink(row)" class="row-link">
+                            {{ row.NCN?.DATE }}
+                        </a>
                     </template>
                 </el-table-column>
                 <el-table-column prop="status" label="状态" align="center" width="108px">
                     <template #default="{row}" >
-                        <span v-if="row.is_running === 0 ">完场</span>
-                        <span v-else style="color: #fff;"> 
-                            {{ row.NCN?.TIMER }}'
-                        </span>
+                        <a :href="getRowLink(row)" class="row-link">
+                            <span v-if="row.is_running === 0 ">完场</span>
+                            <span v-else style="color: #fff;"> 
+                                {{ row.NCN?.TIMER }}'
+                            </span>
+                        </a>
                     </template>
                 </el-table-column>
                 <el-table-column prop="home" label="主场球队" align="right">
                     <template #default="{row}" >
-                        <span v-if="parseInt(row.NCN?.RED?.split(':')[0]) > 0" class="red">{{ parseInt(row.NCN?.RED?.split(":")[0]) }}</span>
-                        <span v-if="parseInt(row.NCN?.YELLOW?.split(':')[0]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[0]) }}</span>
-                        <span style="color: #fff;font-size: 12px;margin-right: 5px;">{{row.hwin}}</span>
-                        <span> {{ row.NCN?.TEAM_H }}</span>
+                        <a :href="getRowLink(row)" class="row-link">
+                            <span v-if="parseInt(row.NCN?.RED?.split(':')[0]) > 0" class="red">{{ parseInt(row.NCN?.RED?.split(":")[0]) }}</span>
+                            <span v-if="parseInt(row.NCN?.YELLOW?.split(':')[0]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[0]) }}</span>
+                            <span style="color: #fff;font-size: 12px;margin-right: 5px;">{{row.hwin}}</span>
+                            <span> {{ row.NCN?.TEAM_H }}</span>
+                        </a>
                     </template>
                 </el-table-column>
                 <el-table-column prop="point" label="比分" align="center" width="60px">
                     <template #default="{row}" >
-                        <span style="color: #fff;font-weight: 600;"> {{ row.NCN?.SCORE }}</span>
+                        <a :href="getRowLink(row)" class="row-link">
+                            <span style="color: #fff;font-weight: 600;"> {{ row.NCN?.SCORE }}</span>
+                        </a>
                     </template>
                 </el-table-column>
                 <el-table-column prop="guest" label="客场球队" align="left">
                     <template #default="{row}" >
-                        <span> {{ row.NCN?.TEAM_C }}</span>
-                        <span style="color: #fff;font-size: 12px;margin:0 5px;">{{row.gwin}}</span>
-                        <span v-if="parseInt(row.NCN?.YELLOW?.split(':')[1]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[1]) }}</span>
-                        <span v-if="parseInt(row.NCN?.RED?.split(':')[1]) > 0" class="red">{{ parseInt(row.NCN?.RED?.split(":")[1]) }}</span>
+                        <a :href="getRowLink(row)" class="row-link">
+                            <span> {{ row.NCN?.TEAM_C }}</span>
+                            <span style="color: #fff;font-size: 12px;margin:0 5px;">{{row.gwin}}</span>
+                            <span v-if="parseInt(row.NCN?.YELLOW?.split(':')[1]) > 0" class="yellow">{{ parseInt(row.NCN?.YELLOW?.split(":")[1]) }}</span>
+                            <span v-if="parseInt(row.NCN?.RED?.split(':')[1]) > 0" class="red">{{ parseInt(row.NCN?.RED?.split(":")[1]) }}</span>
+                        </a>
                     </template>
                 </el-table-column>
                 <el-table-column prop="half" label="半场" align="center" width="88px">
                     <template #default="{ row }">
-                        {{ row.NCN?.["H:SCORE"] }}
+                        <a :href="getRowLink(row)" class="row-link">
+                            {{ row.NCN?.["H:SCORE"] }}
+                        </a>
                     </template>
                 </el-table-column>
                 <el-table-column prop="corner" label="角球" align="center" width="88px">
                     <template #default="{ row }">
-                        {{ row.NCN?.["CN:SCORE"] }}
+                        <a :href="getRowLink(row)" class="row-link">
+                            {{ row.NCN?.["CN:SCORE"] }}
+                        </a>
+                        
                     </template>
                 </el-table-column>
                 <el-table-column label="功能" align="center" width="108px">
@@ -86,11 +103,12 @@ import topRed from '@/assets/table/top_red.png'
 import top from '@/assets/table/top.png'
 import { ElMessage } from 'element-plus';
 import { computed, watch } from 'vue';
+const emit = defineEmits(['update-data'])
 const show = defineModel({ type: Boolean })
 const props = defineProps({
     dialogTitle: String,
     dialogCode: String,
-    selectedIndex: Int32Array
+    dialogOwn: Int32Array,
 })
 const tableData = ref([])
 // 计算用户角色
@@ -101,13 +119,15 @@ const fentchData  = computed(() => {
         const body = { code: props.dialogCode }
         historyLastTen(body).then((res) => {
             tableData.value = res
-            if(props.selectedIndex === 1){
+            if((location.href === '#/screen/jinxuan') && props.dialogOwn === 0){
                 tableData.value = tableData.value.filter(item => item.is_running ===0) //筛选完场的比赛
             }
         })
     }
 })
-
+const getRowLink = (row) =>{
+    return `${location.href}/${row.KEY}/${row.is_running}`
+}
 watch(() =>{
     fentchData.value
 })
@@ -166,12 +186,17 @@ const toggleTop = (row, event) => {
 };
 
 const router = useRouter();
-const handleRowClick = (row) => {
-    router.push(`/Screen/${row.KEY}/${props.selectedIndex}/${row.is_running}`)  
-}
+// const handleRowClick = (row) => {
+//     router.push(`/Screen/${row.KEY}/${props.selectedIndex}/${row.is_running}`)  
+// }
 </script>
 <style lang='scss' scoped>
-
+.row-link {
+  display: block; /* 让链接填满单元格 */
+  width: 100%; /* 确保宽度为100% */
+  text-decoration: none; /* 去除下划线 */
+  color: inherit; /* 继承颜色 */
+}
 .red{
     background-color: #e92937;
     border-radius: 3px;
