@@ -1,0 +1,113 @@
+/* 只需要重写你需要的即可 */
+@forward 'element-plus/theme-chalk/src/common/var.scss' with ($colors: ('primary': ('base': #6455f1),
+  ));
+
+// 如果只是按需导入，则可以忽略以下内容。
+// 如果你想导入所有样式:
+@use "element-plus/theme-chalk/src/index.scss" as *;
+
+:root {
+  --el-border-color: #ebebeb;
+}
+
+.el-table.is-scrolling-none th.el-table-fixed-column--left,
+.el-table.is-scrolling-none th.el-table-fixed-column--right {
+  background-color: #f5f5f5;
+  // color: red;
+}
+
+.el-menu {
+  border-right: none;
+
+  --el-menu-item-height: 48px;
+  --el-menu-sub-item-height: 48px;
+  --el-menu-text-color: #282828; // 默认颜色
+}
+
+// 一级经过
+.el-sub-menu__title:hover {
+  background: none;
+  color: #47acff;
+}
+
+// 二级经过
+.el-menu-item:hover {
+  background: none;
+  color: #47acff;
+}
+
+// 激活
+.el-menu-item.is-active {
+  background-color: var(--el-menu-hover-bg-color);
+  border-right: 6px solid #47acff;
+}
+
+.el-sub-menu__title {
+  span {
+    font-weight: 500;
+  }
+}
+
+.el-table {
+  --el-table-header-bg-color: #eff2ff;
+
+  // border-radius: 16px;
+  background-color: #f6f8ff;
+
+  --el-bg-color: #fff; // 表格背景色
+  --el-table-border: none; // 表格边框
+
+  --el-table-row-hover-bg-color: none; // 表格选中颜色
+
+  .el-table__row {
+    position: relative;
+  }
+}
+
+.el-table th.el-table__cell {
+  color: #707a8b;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.el-table__cell {
+  color: #252a30;
+  font-size: 12px;
+}
+
+// 底部边框
+.el-table--border::after,
+.el-table--border::before,
+.el-table--border .el-table__inner-wrapper::after,
+.el-table__inner-wrapper::before {
+  display: none;
+}
+
+.el-form-item__label {
+  color: #202630;
+}
+
+.el-input__wrapper,
+.el-select__wrapper {
+  box-shadow: none;
+  // border-radius: 16px;
+  background-color: #f6f8ff;
+}
+
+.el-input-number .el-input__inner {
+  color: #202630;
+}
+
+.el-dialog {
+  padding: 0;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.el-dialog__header {
+  padding-bottom: 0;
+}
+
+// .el-button {
+//   --el-border-radius-base: 24px;
+// }

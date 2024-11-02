@@ -1,0 +1,73 @@
+{
+  "name": "duixian",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "productName": "对线体育",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build": "npm run dist",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "electron-builder --dir",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:mac:u": "electron-builder --mac --universal",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron-updater": "^6.2.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^31.0.1",
+    "electron-builder": "^24.13.3",
+    "electron-updater": "^6.2.1"
+  },
+  "electronLanguagesInfoPlistStrings": {
+    "en": {
+      "CFBundleDisplayName": "duixian",
+      "CFBundleName": "duixian"
+    },
+    "zh_CN": {
+      "CFBundleDisplayName": "duixian",
+      "CFBundleName": "duixian"
+    }
+  },
+  "build": {
+    "copyright": "Copyright © 2024 Derrick版权所有",
+    "appId": "com.qubit-dance.duixian",
+    "productName": "对线体育",
+    "afterPack": "./buildAfterPack.cjs",
+    "beforePack": "./buildBeforePack.cjs",
+    "directories": {
+      "output": "../dist/${version}/duixian"
+    },
+    "releaseInfo": {
+      "releaseNotesFile": "release-notes.md"
+    },
+    "mac": {
+      "icon": "build/logo.png",
+      "appId": "com.qubit-dance.duixian",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "extendInfo": {
+        "LSHasLocalizedDisplayName": true
+      }
+    },
+    "win": {
+      "icon": "build/logo.png",
+      "verifyUpdateCodeSignature": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    }
+  }
+}

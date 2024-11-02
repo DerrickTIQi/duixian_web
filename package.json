@@ -1,0 +1,23 @@
+{
+  "name": "duixian",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "web:start": "cd duixian-admin && yarn start",
+    "app:start": "cd duixian-app && yarn start",
+    "build:web": "cd duixian-admin && yarn build",
+    "build:win": "cd duixian-app && yarn build:win",
+    "build": "cd duixian-app && yarn build:mac:u && yarn build:win"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
